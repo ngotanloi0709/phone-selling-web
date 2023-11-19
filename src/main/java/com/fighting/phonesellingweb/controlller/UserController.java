@@ -23,8 +23,6 @@ public class UserController {
 
     @GetMapping("/login")
     public String getLogin(){
-
-
         return "login";
     }
 
@@ -34,9 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String postRegister(@RequestParam Map<String, String> account,
-                               Model model,
-                               HttpServletResponse response){
+    public String postRegister(@RequestParam Map<String, String> account, Model model, HttpServletResponse response) {
         try {
             String email = account.get("email");
             String password = account.get("password");
@@ -44,7 +40,6 @@ public class UserController {
             String phone = account.get("phone");
 
             if (userService.isUserExists(email)) {
-                model.addAttribute("error", "Email đã tồn tại!").toString();
                 return "register";
             }
 

@@ -7,5 +7,38 @@
 </head>
 <body>
     <h1>Đây là trang quản lý người dùng</h1>
+    <h1>Danh sách người dùng</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Tên người dùng</th>
+            <th>Địa chỉ</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Chỉnh sửa</th>
+            <th>Xoá</th>
+        </tr>
+
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.address}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.phone}"></td>
+            <td>
+                <a th:href="@{/admin/user/edit/{id}(id=${user.id})}">
+                    <button>Chỉnh sửa</button>
+                </a>
+            </td>
+            <td>
+                <form th:action="@{/admin/user/delete/{id}(id=${user.id})}" method="post">
+                    <button type="submit">Xóa</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <form th:action="@{/admin/user/add}">
+        <button type="submit">Thêm Người dùng mới mới</button>
+    </form>
 </body>
 </html>

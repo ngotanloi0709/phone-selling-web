@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉnh sửa người dùng</title>
+</head>
+<body>
+<h1>Chỉnh sửa người dùng</h1>
+<form th:method="post" th:action="@{/admin/user/edit/{id}(id=${user.id})}"  th:object="${user}">
+    <table>
+        <tr>
+            <td>Tên người dùng</td>
+            <td><input type="text" id="name" name="name" th:field="*{name}" th:value="${user.name}"/></td>
+        </tr>
+        <tr>
+            <td>Địa chỉ</td>
+            <td><input type="text" id="address" name="address" th:field="*{address}" th:value="${user.address}"/></td>
+        </tr>
+        <tr>
+            <td>Số điện thoại</td>
+            <td><input type="text" id="phone" name="phone" th:field="*{phone}" th:value="${user.phone}"/></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button type="submit">Lưu</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

@@ -17,10 +17,6 @@ public class BrandService {
     }
 
     public void createBrand(Brand brand) {
-        if (brandRepository.findByName(brand.getName()) != null) {
-            return;
-        }
-
         brandRepository.save(brand);
     }
 
@@ -28,11 +24,11 @@ public class BrandService {
         return brandRepository.findById(i).orElse(null);
     }
 
-    public void updateBrand(Brand brand) {
-        if (brandRepository.findByName(brand.getName()) != null) {
-            return;
-        }
+    public boolean isBrandExists(String name) {
+        return brandRepository.findByName(name) != null;
+    }
 
+    public void updateBrand(Brand brand) {
         brandRepository.save(brand);
     }
 
