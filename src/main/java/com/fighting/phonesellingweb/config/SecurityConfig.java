@@ -47,8 +47,12 @@ public class SecurityConfig {
                 // form parameter name for password
                 .passwordParameter("password")
                 // add cookie after login success and redirect to home page after login success
-                .successHandler(authenticationSuccessHandler)
                 // we don't use default login page of http config because it will redirect to specific url before the cookie is added
+                .successHandler(authenticationSuccessHandler)
+                .failureHandler((request, response, exception) -> {
+                    request.getSession().setAttribute("error", "Sai tên đăng nhập hoặc mật khẩu");
+                    response.sendRedirect("/account/login?error=true");
+                })
         );
 
         // set session creation policy to IF_REQUIRED

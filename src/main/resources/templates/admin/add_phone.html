@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm điện thoại</title>
+</head>
+<body>
+    <h1>Thêm điện thoại</h1>
+    <form th:method="post" th:action="@{/admin/product/add}" th:object="${phone}">
+        <label for="name">Tên điện thoại:</label>
+        <input type="text" id="name" name="name" th:field="*{name}">
+        <br>
+        <label for="price">Giá:</label>
+        <input type="number" id="price" name="price" th:field="*{price}">
+        <br>
+        <label for="description">Mô tả:</label>
+        <textarea id="description" name="description" th:field="*{description}"></textarea>
+        <br>
+        <label for="brand">Hãng:</label>
+        <select id="brand" name="brand" th:field="*{brand}">
+            <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
+        </select>
+        <br>
+        <label for="color">Màu sắc:</label>
+        <input type="text" id="color" name="color" th:field="*{color}">
+        <br>
+        <label for="cpu">CPU:</label>
+        <input type="text" id="cpu" name="cpu" th:field="*{cpu}">
+        <br>
+        <label for="display">Màn hình:</label>
+        <input type="text" id="display" name="display" th:field="*{display}">
+        <br>
+        <label for="camera">Máy ảnh:</label>
+        <input type="text" id="camera" name="camera" th:field="*{camera}">
+        <br>
+        <label for="batteryLife">Thời lượng pin:</label>
+        <input type="text" id="batteryLife" name="batteryLife" th:field="*{batteryLife}">
+        <br>
+        <label for="os">Hệ điều hành:</label>
+        <input type="text" id="os" name="os" th:field="*{os}">
+        <br>
+        <label for="memory">Bộ nhớ:</label>
+        <input type="text" id="memory" name="memory" th:field="*{memory}">
+        <br>
+        <label for="imageUrl">Đường link ảnh:</label>
+        <input type="text" id="imageUrl" name="imageUrl" th:field="*{imageUrl}">
+        <br>
+        <input type="submit" value="Lưu">
+
+    </form>
+</body>
+</html>

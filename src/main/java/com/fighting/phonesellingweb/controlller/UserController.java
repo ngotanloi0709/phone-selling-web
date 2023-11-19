@@ -5,7 +5,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,8 @@ public class UserController {
 
     @GetMapping("/login")
     public String getLogin(){
+
+
         return "login";
     }
 
@@ -30,12 +34,19 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String postRegister(@RequestParam Map<String, String> account){
+    public String postRegister(@RequestParam Map<String, String> account,
+                               Model model,
+                               HttpServletResponse response){
         try {
             String email = account.get("email");
             String password = account.get("password");
             String name = account.get("name");
             String phone = account.get("phone");
+
+            if (userService.isUserExists(email)) {
+                model.addAttribute("error", "Email đã tồn tại!").toString();
+                return "register";
+            }
 
             userService.register(email, password, name, phone);
 
@@ -43,7 +54,7 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
 
-            return "redirect:/account/register";
+            return "register";
         }
     }
 

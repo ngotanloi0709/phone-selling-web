@@ -17,7 +17,12 @@ public class UserService {
         return (User) userRepository.findByEmail(email).orElseThrow();
     }
 
+    public boolean isUserExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     public void register(String email, String password, String name, String phone) {
+
         User user = new User(email, passwordEncoder.encode(password), name, phone);
         userRepository.save(user);
     }

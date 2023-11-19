@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉnh sửa hãng</title>
+</head>
+<body>
+    <h1>Chỉnh sửa hãng</h1>
+    <form th:method="post" th:action="@{/admin/product/brand/edit/{id}(id=${brand.id})}" th:object="${brand}">
+        <label for="name">Tên hãng:</label>
+        <input type="text" id="name" name="name" th:field="*{name}" th:value="${brand.name}">
+        <input type="submit" value="Lưu">
+    </form>
+</body>
+</html>

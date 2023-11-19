@@ -1,12 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Đăng ký</title>
 </head>
 <body>
-    <h1>Đăng ký</h1>
+    <h1>Đây là trang đăng ký</h1>
+    <form th:action="@{/account/register}" th:method="post">
+        <label>
+            Email:
+            <input type="text" name="email" placeholder="Email">
+        </label>
+        <br>
+        <label>
+            Mật khẩu:
+            <input type="password" name="password" placeholder="Mật khẩu">
+        </label>
+        <br>
+        <label>
+            Tên đầy đủ:
+            <input type="text" name="name" placeholder="Họ và tên">
+        </label>
+        <br>
+        <label>
+            Số điện thoại:
+            <input type="text" name="phone" placeholder="Số điện thoại">
+        </label>
+        <br>
+        <input type="submit" value="Đăng Ký">
+    </form>
 
+    <div th:if="${error}" th:text="${error}" style="color: red;"></div>
 
+    <button onclick="location.href='/account/login'">Đăng nhập</button>
 </body>
 </html>

@@ -19,6 +19,7 @@ public class Brand {
 
     @OneToMany(mappedBy = "brand", fetch = FetchType.EAGER)
     @JsonBackReference("phone-brand")
+    @ToString.Exclude
     private List<Phone> phones;
 
     public Brand(String name) {
