@@ -1,5 +1,6 @@
 package com.fighting.phonesellingweb.config;
 
+import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,18 +29,19 @@ public class SecurityConfig {
         http.authenticationProvider(authenticationProvider);
         // authorize requests
         http.authorizeHttpRequests(auth -> auth
+                // allow access to home page
+                .requestMatchers("/", "/home").permitAll()
+                // allow access to error page
+                .requestMatchers("/error").permitAll()
                 // allow access to authentication page
-                .requestMatchers("account/login").permitAll()
-                .requestMatchers("account/register").permitAll()
+                .requestMatchers("account/**").permitAll()
                 // allow access to admin page
-                .requestMatchers("admin").hasRole("ADMIN")
-
+                .requestMatchers("admin/**").hasRole("ADMIN")
                 // any request must be authenticated
                 .anyRequest().authenticated());
-
         http.formLogin(form -> form
                 // set login url
-                .loginPage("/account/login")
+                .loginPage("/account/login").permitAll()
                 // form parameter name for email
                 .usernameParameter("email")
                 // form parameter name for password
@@ -49,21 +51,22 @@ public class SecurityConfig {
                 // we don't use default login page of http config because it will redirect to specific url before the cookie is added
         );
 
-        http.logout(logout -> logout
-                // set logout url
-                .logoutUrl("account/logout")
-                // delete cookie after logout
-                .deleteCookies("email")
-                // redirect to home page after logout success
-                .logoutSuccessUrl("/")
-        );
-
         // set session creation policy to IF_REQUIRED
         // only create session if the user not login yet
         // however, if the user is logged in, then Spring Security will use the existing session to store their authentication information
         http.sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
         );
+
+        http.rememberMe(rememberMe -> {
+            // set remember me parameter name
+            rememberMe.rememberMeParameter("remember-me");
+            // set token valid for 30 days
+            rememberMe.tokenValiditySeconds(2592000);
+            // set key to encode remember me cookie
+            rememberMe.key("remembermekey");
+        });
+
 
         return http.build();
     }

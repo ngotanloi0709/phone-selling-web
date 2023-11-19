@@ -6,5 +6,7 @@
 </head>
 <body>
     <h1>Đây là trang chủ</h1>
+    <h1 th:if="${user}" th:text="'Xin chào ' + ${user.getName()}"></h1>
+    <a href="account/logout">Đăng xuất</a>
 </body>
 </html>

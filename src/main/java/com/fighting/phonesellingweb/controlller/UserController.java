@@ -1,6 +1,9 @@
 package com.fighting.phonesellingweb.controlller;
 
 import com.fighting.phonesellingweb.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +45,24 @@ public class UserController {
 
             return "redirect:/account/register";
         }
+    }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response, HttpSession session) {
+        Cookie email = new Cookie("email", null);
+        email.setMaxAge(0);
+        email.setPath("/");
+        Cookie jSessionId = new Cookie("JSESSIONID", null);
+        jSessionId.setMaxAge(0);
+        jSessionId.setPath("/");
+        Cookie rememberMe = new Cookie("remember-me", null);
+        rememberMe.setMaxAge(0);
+        rememberMe.setPath("/");
+
+        response.addCookie(email);
+        response.addCookie(jSessionId);
+        response.addCookie(rememberMe);
+
+        return "redirect:/";
     }
 }
