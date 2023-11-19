@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
     private UserService userService;
 
-    @GetMapping({"/", "/home"})
+    @GetMapping({"", "/", "/home"})
     public String getHome(
             @CookieValue(name="email", required = false) String email,
             Model model

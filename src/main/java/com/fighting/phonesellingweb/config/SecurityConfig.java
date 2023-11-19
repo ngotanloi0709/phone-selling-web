@@ -60,6 +60,7 @@ public class SecurityConfig {
         // however, if the user is logged in, then Spring Security will use the existing session to store their authentication information
         http.sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .maximumSessions(1)
         );
 
         http.rememberMe(rememberMe -> {
