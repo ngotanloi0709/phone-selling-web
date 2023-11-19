@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm hãng</title>
+</head>
+<body>
+    <h1>Thêm hãng</h1>
+    <form th:method="post" th:action="@{/admin/product/brand/add}" th:object="${brand}">
+        <label for="name">Tên hãng:</label>
+        <input type="text" id="name" name="name" th:field="*{name}">
+        <input type="submit" value="Lưu">
+    </form>
+</body>
+</html>

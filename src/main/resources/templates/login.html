@@ -12,11 +12,20 @@
             Email:
             <input type="text" name="email" placeholder="Email">
         </label>
+        <br>
         <label>
             Mật khẩu:
             <input type="password" name="password" placeholder="Mật khẩu">
         </label>
+        <br>
         <input type="submit" value="Đăng nhập">
+        <br>
+        <div th:if="${param.error}" style="color: red;">
+            <p th:text="${session.error}"></p>
+        </div>
+        <br>
     </form>
+
+    <button onclick="location.href='/account/register'">Đăng ký</button>
 </body>
 </html>
