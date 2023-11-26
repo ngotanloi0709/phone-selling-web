@@ -27,6 +27,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "user")
+    private List<CartItem> carts;
+
     public User(String email, String password, String name, String phone) {
         this.email = email;
         this.password = password;
