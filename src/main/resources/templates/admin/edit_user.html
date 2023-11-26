@@ -7,19 +7,19 @@
 </head>
 <body>
 <h1>Chỉnh sửa người dùng</h1>
-<form th:method="post" th:action="@{/admin/user/edit/{id}(id=${user.id})}"  th:object="${user}">
+<form th:method="post" th:action="@{/admin/user/edit/{id}(id=${userMapping.id})}"  th:object="${userMapping}">
     <table>
         <tr>
             <td>Tên người dùng</td>
-            <td><input type="text" id="name" name="name" th:field="*{name}" th:value="${user.name}"/></td>
+            <td><input type="text" id="name" name="name" th:field="*{name}" th:value="${userMapping.name}"/></td>
         </tr>
         <tr>
             <td>Địa chỉ</td>
-            <td><input type="text" id="address" name="address" th:field="*{address}" th:value="${user.address}"/></td>
+            <td><input type="text" id="address" name="address" th:field="*{address}" th:value="${userMapping.address}"/></td>
         </tr>
         <tr>
             <td>Số điện thoại</td>
-            <td><input type="text" id="phone" name="phone" th:field="*{phone}" th:value="${user.phone}"/></td>
+            <td><input type="text" id="phone" name="phone" th:field="*{phone}" th:value="${userMapping.phone}"/></td>
         </tr>
         <tr>
             <td colspan="2">

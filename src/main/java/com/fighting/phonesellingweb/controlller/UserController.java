@@ -8,10 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -22,24 +19,41 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/login")
-    public String getLogin(){
+    public String getLogin(@CookieValue(name="email", required = false) String email){
+        if (email != null) {
+            return "redirect:/";
+        }
+
         return "login";
     }
 
     @GetMapping("/register")
-    public String getRegister(){
+    public String getRegister(@CookieValue(name="email", required = false) String email){
+        if (email != null) {
+            return "redirect:/";
+        }
+
         return "register";
     }
 
     @PostMapping("/register")
-    public String postRegister(@RequestParam Map<String, String> account, Model model, HttpServletResponse response) {
+    public String postRegister(@RequestParam Map<String, String> account, Model model) {
         try {
             String email = account.get("email");
             String password = account.get("password");
+            String repeatPassword = account.get("repeat-password");
             String name = account.get("name");
             String phone = account.get("phone");
 
+            if (!password.equals(repeatPassword)) {
+                model.addAttribute("error", "Mật khẩu không khớp");
+
+                return "register";
+            }
+
             if (userService.isUserExists(email)) {
+                model.addAttribute("error", "Email đã tồn tại");
+
                 return "register";
             }
 

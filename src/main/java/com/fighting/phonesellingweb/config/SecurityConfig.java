@@ -29,6 +29,8 @@ public class SecurityConfig {
         http.authenticationProvider(authenticationProvider);
         // authorize requests
         http.authorizeHttpRequests(auth -> auth
+                // allow access to static resources
+                .requestMatchers("/static/**").permitAll()
                 // allow access to home page
                 .requestMatchers("/", "/home").permitAll()
                 // allow access to error page

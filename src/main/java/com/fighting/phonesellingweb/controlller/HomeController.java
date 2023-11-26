@@ -16,10 +16,7 @@ public class HomeController {
     private UserService userService;
 
     @GetMapping({"", "/", "/home"})
-    public String getHome(
-            @CookieValue(name="email", required = false) String email,
-            Model model
-    ) {
+    public String getHome(@CookieValue(name="email", required = false) String email, Model model) {
         if (email != null) {
             User user = userService.findUserByEmail(email);
             model.addAttribute("user", user);
