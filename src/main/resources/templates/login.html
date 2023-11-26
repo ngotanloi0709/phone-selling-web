@@ -60,10 +60,10 @@
                                     </div>
 
                                     <div class="col-12">
-                                        <button class="btn btn-success" type="submit" class="btn btn-primary px-4 float-end mt-4">Đăng nhập</button>
+                                        <button type="submit" class="btn btn-primary px-4 float-end mt-4">Đăng nhập</button>
                                     </div>
                                     <div class="col-12">
-                                        <button class="btn btn-success" type="button" class="btn btn-primary px-4 float-end mt-4" onclick="location.href='/account/register'">Đăng ký</button>
+                                        <button type="button" class="btn btn-primary px-4 float-end mt-4" onclick="location.href='/account/register'">Đăng ký</button>
                                     </div>
                                     <div th:if="${param.error}" style="color: red;">
                                         <p th:text="${session.error}"></p>
