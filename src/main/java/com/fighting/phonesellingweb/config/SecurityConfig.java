@@ -32,7 +32,7 @@ public class SecurityConfig {
                 // allow access to static resources
                 .requestMatchers("/static/**").permitAll()
                 // allow access to home page
-                .requestMatchers("/", "/home").permitAll()
+                .requestMatchers("/", "/home", "/product/{id}").permitAll()
                 // allow access to error page
                 .requestMatchers("/error").permitAll()
                 // allow access to authentication page

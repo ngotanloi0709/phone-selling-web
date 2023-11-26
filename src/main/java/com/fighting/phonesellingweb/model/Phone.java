@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,6 +30,9 @@ public class Phone {
     @JoinColumn(name = "brand_id")
     @JsonManagedReference("phone-brand")
     private Brand brand;
+
+    @OneToMany(mappedBy = "phone")
+    private List<Comment> comments;
 
     public Phone(String name, String description, double price, String color, String memory, String os, String cpu, String display, String camera, String batteryLife, String imageUrl, Brand brand) {
         this.name = name;
