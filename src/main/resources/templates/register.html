@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Đăng ký</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
     <style>
         a {
             text-decoration: none;
@@ -24,103 +22,74 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Phone Store</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Trang chủ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/cart">Giỏ hàng</a>
-                </li>
-                <li class="nav-item">
-                    <a th:if="${user != null and user.role == 'ROLE_ADMIN'}" class="nav-link" href="/admin">Admin</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" th:if="${user}" th:text="'Xin chào ' + ${user.getName()}"></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:if="${user}" href="/account/logout">Đăng xuất</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" th:if="${user == null}" href="/account/login">Đăng nhập</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<div class="login-page bg-light">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-10 offset-lg-1">
-                <h3 class="mb-3">Login Now</h3>
-                <div class="bg-white shadow rounded">
-                    <div class="row">
-                        <div class="col-md-7 pe-0">
-                            <div class="form-left h-100 py-5 px-5">
-                                <form class="row g-4" th:action="@{/account/register}" th:method="post">
-                                    <div class="col-12">
-                                        <label>Email<span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
-                                            <input type="text" class="form-control" placeholder="Enter email" name="email">
+<div th:insert="~{/navbar.html}"></div>
+<main>
+    <div class="login-page bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 offset-lg-1">
+                    <h3 class="mb-3">Login Now</h3>
+                    <div class="bg-white shadow rounded">
+                        <div class="row">
+                            <div class="col-md-7 pe-0">
+                                <div class="form-left h-100 py-5 px-5">
+                                    <form class="row g-4" th:action="@{/account/register}" th:method="post">
+                                        <div class="col-12">
+                                            <label>Email<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
+                                                <input type="text" class="form-control" placeholder="Enter email" name="email">
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-12">
-                                        <label>Password<span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
-                                            <input type="password" class="form-control" placeholder="Enter Password" name="password">
+                                        <div class="col-12">
+                                            <label>Password<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
+                                                <input type="password" class="form-control" placeholder="Enter Password" name="password">
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-12">
-                                        <label>Repeat Password<span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
-                                            <input type="password" class="form-control" placeholder="Repeat Password" name="repeat-password">
+                                        <div class="col-12">
+                                            <label>Repeat Password<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
+                                                <input type="password" class="form-control" placeholder="Repeat Password" name="repeat-password">
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-12">
-                                        <label>Tên đầy đủ<span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
-                                            <input type="text" class="form-control" placeholder="Họ và tên" name="name">
+                                        <div class="col-12">
+                                            <label>Tên đầy đủ<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
+                                                <input type="text" class="form-control" placeholder="Họ và tên" name="name">
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-12">
-                                        <label>Số điện thoại<span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
-                                            <input type="text" class="form-control" placeholder="Số điện thoại" name="phone">
+                                        <div class="col-12">
+                                            <label>Số điện thoại<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
+                                                <input type="text" class="form-control" placeholder="Số điện thoại" name="phone">
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-primary px-4 float-end mt-4">Đăng ký</button>
-                                    </div>
-                                    <div class="col-12">
-                                        <button type="button" class="btn btn-primary px-4 float-end mt-4" onclick="location.href='/account/login'">Đăng nhập</button>
-                                    </div>
-                                    <div th:if="${error}" style="color: red;">
-                                        <p th:text="${error}"></p>
-                                    </div>
-                                </form>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary px-4 float-end mt-4">Đăng ký</button>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="button" class="btn btn-primary px-4 float-end mt-4" onclick="location.href='/account/login'">Đăng nhập</button>
+                                        </div>
+                                        <div th:if="${error}" style="color: red;">
+                                            <p th:text="${error}"></p>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-5 ps-0 d-none d-md-block">
-                            <div class="form-right h-100 bg-primary text-white text-center pt-5">
-                                <h2 class="fs-1">Hello New User</h2>
+                            <div class="col-md-5 ps-0 d-none d-md-block">
+                                <div class="form-right h-100 bg-primary text-white text-center pt-5">
+                                    <h2 class="fs-1">Hello New User</h2>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -128,6 +97,7 @@
             </div>
         </div>
     </div>
-</div>
+</main>
+<div th:insert="~{/footer.html}"></div>
 </body>
 </html>
