@@ -5,12 +5,240 @@
     <title>Trang chủ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        .card {
+            margin-bottom: 20px;
+        }
+        .card-img-top {
+            width: 100%;
+            height: 15vw;
+            object-fit: cover;
+        }
+        .card-body button {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
 <div th:insert="~{/navbar.html}"></div>
 <main>
 
+
+
+
+<!--   START HOME>-->
+
+    <section id="banner">
+        <!-- Slideshow or banner content -->
+    </section>
+
+    <section id="categories">
+        <!-- Product categories -->
+        <div class="container mt-4">
+            <h2>Categories</h2>
+            <ul class="list-group">
+                <li class="list-group-item">Category 1</li>
+                <li class="list-group-item">Category 2</li>
+                <li class="list-group-item">Category 3</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="best-sellers">
+        <!-- Best-selling products -->
+        <div class="container mt-4">
+            <h2>Best Sellers</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="product1.jpg" class="card-img-top" alt="Product 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Product 1</h5>
+                            <p class="card-text">Price: $10</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-success">Buy Now</a>
+                            <!-- Buy Now button -->
+                            <a href="#" class="btn btn-info">View Details</a>
+                            <!-- View Details button -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="product2.jpg" class="card-img-top" alt="Product 2">
+                        <div class="card-body">
+                            <h5 class="card-title">Product 2</h5>
+                            <p class="card-text">Price: $20</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-success">Buy Now</a>
+                            <!-- Buy Now button -->
+                            <a href="#" class="btn btn-info">View Details</a>
+                            <!-- View Details button -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="product3.jpg" class="card-img-top" alt="Product 3">
+                        <div class="card-body">
+                            <h5 class="card-title">Product 3</h5>
+                            <p class="card-text">Price: $30</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-success">Buy Now</a>
+                            <!-- Buy Now button -->
+                            <a href="#" class="btn btn-info">View Details</a>
+                            <!-- View Details button -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="random-products">
+        <div class="container mt-4">
+            <h2>Random Products</h2>
+            <div class="row">
+                <div th:each="phone : ${randomPhonePage.content}" class="col-md-4">
+                    <div class="card" th:if="${phone != null}">
+                        <img th:src="${phone.imageUrl}" alt="Phone Image" th:if="${phone.imageUrl != null}" />
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${phone.name}">Product Name</h5>
+                            <p class="card-text" th:text="'Price: $' + ${phone.price}">Price</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-success">Buy Now</a>
+                            <a href="#" class="btn btn-info">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Phân trang -->
+            <div>
+                <ul class="pagination">
+                    <li th:each="pageNum : ${#numbers.sequence(0, randomPhonePage.totalPages - 1)}" class="page-item">
+                        <a th:href="@{'/?(page=' + ${pageNum} + ', size=' + ${randomPhonePage.size} + ')'}" class="page-link" th:text="${pageNum}">1</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="brand-products">
+        <!-- Products based on brand -->
+        <div class="container mt-4">
+            <h2>Brand Products</h2>
+            <select class="form-control mb-3">
+                <option>Select Brand</option>
+                <option>Brand 1</option>
+                <option>Brand 2</option>
+                <option>Brand 3</option>
+            </select>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="product7.jpg" class="card-img-top" alt="Product 7">
+                        <div class="card-body">
+                            <h5 class="card-title">Product 7</h5>
+                            <p class="card-text">Price: $70</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-success">Buy Now</a>
+                            <!-- Buy Now button -->
+                            <a href="#" class="btn btn-info">View Details</a>
+                            <!-- View Details button -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="product8.jpg" class="card-img-top" alt="Product 8">
+                        <div class="card-body">
+                            <h5 class="card-title">Product 8</h5>
+                            <p class="card-text">Price: $80</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-success">Buy Now</a>
+                            <!-- Buy Now button -->
+                            <a href="#" class="btn btn-info">View Details</a>
+                            <!-- View Details button -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="product9.jpg" class="card-img-top" alt="Product 9">
+                        <div class="card-body">
+                            <h5 class="card-title">Product 9</h5>
+                            <p class="card-text">Price: $90</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-success">Buy Now</a>
+                            <!-- Buy Now button -->
+                            <a href="#" class="btn btn-info">View Details</a>
+                            <!-- View Details button -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sorting">
+        <!-- Sorting options -->
+        <div class="container mt-4">
+            <h2>Sorting</h2>
+            <select class="form-control mb-3">
+                <option>Sort by Price (Low to High)</option>
+                <option>Sort by Price (High to Low)</option>
+            </select>
+        </div>
+    </section>
+
+    <section id="product-list">
+        <!-- Product cards -->
+        <div class="container mt-4">
+            <h2>Product List</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="product10.jpg" class="card-img-top" alt="Product 10">
+                        <div class="card-body">
+                            <h5 class="card-title">Product 10</h5>
+                            <p class="card-text">Price: $100</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="product11.jpg" class="card-img-top" alt="Product 11">
+                        <div class="card-body">
+                            <h5 class="card-title">Product 11</h5>
+                            <p class="card-text">Price: $110</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-success">Buy Now</a> <!-- Buy Now button -->
+                            <a href="#" class="btn btn-info">View Details</a> <!-- View Details button -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="product12.jpg" class="card-img-top" alt="Product 12">
+                        <div class="card-body">
+                            <h5 class="card-title">Product 12</h5>
+                            <p class="card-text">Price: $120</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-success">Buy Now</a> <!-- Buy Now button -->
+                            <a href="#" class="btn btn-info">View Details</a> <!-- View Details button -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<!--     END HOME-->
+
+
 </main>
 <div th:insert="~{/footer.html}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
