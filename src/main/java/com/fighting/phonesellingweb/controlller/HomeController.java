@@ -1,5 +1,6 @@
 package com.fighting.phonesellingweb.controlller;
 
+import com.fighting.phonesellingweb.model.Brand;
 import com.fighting.phonesellingweb.model.Phone;
 import com.fighting.phonesellingweb.model.User;
 import com.fighting.phonesellingweb.service.BrandService;
@@ -8,13 +9,13 @@ import com.fighting.phonesellingweb.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,18 +36,38 @@ public class HomeController {
     @GetMapping({"", "/", "/home"})
     public String home(@CookieValue(name="email", required = false) String email,
                        @RequestParam(defaultValue = "1") int page,
-                       @RequestParam(defaultValue = "3") int size, Model model) {
+                       @RequestParam(defaultValue = "3") int size,
+                       @RequestParam(required = false) Integer brandId,
+                       Model model) {
         if (email != null) {
             User user = userService.findUserByEmail(email);
             model.addAttribute("user", user);
         }
 
-        Page<Phone> randomPhonePage = phoneService.findRandomPhones(page, size);
-        model.addAttribute("randomPhonePage", randomPhonePage);
+        List<Phone> phones;
+        if (brandId != null) {
+            phones = phoneService.findPhonesByBrand(brandId);
+        } else {
+            phones = phoneService.getAllPhones();
+        }
+        model.addAttribute("phones", phones);
         model.addAttribute("brands", brandService.findAllBrands());
+        model.addAttribute("brandId", brandId);
+
+        // Add randomPhonePage to the model
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Phone> randomPhonePage = phoneService.findRandomPhones(pageable);
+        model.addAttribute("randomPhonePage", randomPhonePage);
 
         return "index";
     }
+
+    @GetMapping("/brand/{brandId}/phones")
+    @ResponseBody
+    public List<Phone> getPhonesByBrand(@PathVariable int brandId) {
+        return phoneService.findPhonesByBrand(brandId);
+    }
+
 
 
 }

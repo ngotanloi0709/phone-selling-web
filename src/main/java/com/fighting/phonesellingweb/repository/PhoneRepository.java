@@ -13,7 +13,9 @@ import java.util.List;
 public interface PhoneRepository extends JpaRepository<Phone, Integer> {
     public Phone findByName(String name);
 
-    List<Phone> findByBrandId(int brandId);
+    Page<Phone> findByBrand_Id(int brandId, Pageable pageable);
+
+    Page<Phone> findByBrandId(int brandId, Pageable pageable);
 
     Page<Phone> findAll(Pageable pageable);
 

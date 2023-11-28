@@ -38,7 +38,6 @@ public class PhoneService {
         phoneRepository.deleteById(id);
     }
 
-
     // Lấy danh sách sản phẩm ngẫu nhiên
     public List<Phone> findRandomPhones(int limit) {
         List<Phone> allPhones = phoneRepository.findAll();
@@ -49,13 +48,30 @@ public class PhoneService {
                 .collect(Collectors.toList());
     }
     // Lấy sản phẩm theo thương hiệu
-    public List<Phone> findPhonesByBrand(int brandId) {
-        return phoneRepository.findByBrandId(brandId);
+    public List<Phone> findPhonesByBrand(int brand_id) {
+        Pageable pageable = PageRequest.of(0, 10); // adjust the page number and size as needed
+        Page<Phone> page = phoneRepository.findByBrandId(brand_id, pageable);
+        return page.getContent();
     }
 
-    public Page<Phone> findRandomPhones(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<Phone> findRandomPhones(Pageable pageable) {
         List<Phone> randomPhones = phoneRepository.findRandomPhones(pageable);
         return new PageImpl<>(randomPhones, pageable, randomPhones.size());
+    }
+
+
+    public Page<Phone> findAllPhones(Pageable pageable) {
+            return phoneRepository.findAll(pageable);
+        }
+
+
+
+
+    public List<Phone> getAllPhones() {
+        return phoneRepository.findAll();
+    }
+
+    public Page<Phone> findPhonesByBrand(int brand_id, Pageable pageable) {
+        return phoneRepository.findByBrandId(brand_id, pageable);
     }
 }
