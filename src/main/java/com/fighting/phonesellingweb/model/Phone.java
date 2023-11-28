@@ -48,4 +48,5 @@ public class Phone {
         this.imageUrl = imageUrl;
         this.brand = brand;
     }
+
 }

@@ -3,6 +3,8 @@ package com.fighting.phonesellingweb.service;
 import com.fighting.phonesellingweb.model.Brand;
 import com.fighting.phonesellingweb.repository.BrandRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,5 +36,13 @@ public class BrandService {
 
     public void deleteBrand(Integer id) {
         brandRepository.deleteById(id);
+    }
+
+    public Page<Brand> findAllBrands(Pageable pageable) {
+        return brandRepository.findAll(pageable);
+    }
+
+    public List<Brand> getAllBrands() {
+        return brandRepository.findAll();
     }
 }
