@@ -66,12 +66,22 @@ public class PhoneService {
 
 
 
+    public Page<Phone> findPhonesByBrand(int brandId, Pageable pageable) {
 
-    public List<Phone> getAllPhones() {
-        return phoneRepository.findAll();
+        return phoneRepository.findByBrandId(brandId, pageable);
+
     }
 
-    public Page<Phone> findPhonesByBrand(int brand_id, Pageable pageable) {
-        return phoneRepository.findByBrandId(brand_id, pageable);
+    public Page<Phone> getAllPhones(Pageable pageable) {
+        return phoneRepository.findAll(pageable);
+    }
+
+
+    public long countProductsByBrand(Integer brandId) {
+        return phoneRepository.countByBrandId(brandId);
+    }
+
+    public long countProducts() {
+        return phoneRepository.count();
     }
 }
