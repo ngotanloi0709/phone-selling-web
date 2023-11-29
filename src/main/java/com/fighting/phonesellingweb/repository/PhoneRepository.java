@@ -22,4 +22,5 @@ public interface PhoneRepository extends JpaRepository<Phone, Integer> {
     @Query("SELECT p FROM Phone p ORDER BY RAND()")
     List<Phone> findRandomPhones(Pageable pageable);
 
+    long countByBrandId(Integer brandId);
 }

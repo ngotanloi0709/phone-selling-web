@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Brand Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        .card {
+            margin-bottom: 30px;
+        }
+        .card-img-top {
+            width: 100%;
+            height: 20vw;
+            object-fit: cover;
+        }
+        .card-body button {
+            margin-right: 10px;
+        }
+        .pagination {
+            justify-content: center; /* Center the pagination */
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff; /* Change the background color of the active page number */
+            border-color: #007bff; /* Change the border color of the active page number */
+        }
+
+        .pagination .page-link {
+            color: #007bff; /* Change the color of the page numbers */
+        }
+
+        .pagination .page-link:hover {
+            color: #0056b3; /* Change the color of the page numbers on hover */
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{/navbar.html :: navbar(currentUser=${currentUser})}"></div>
+<main>
+    <section id="brand-products">
+        <!-- Products based on brand -->
+        <div class="container mt-4">
+            <h2>Brand Products</h2>
+            <div class="btn-group" role="group" aria-label="Brand selection">
+                <a th:each="brand : ${brands}"
+                   th:href="@{'/brand?brandId=' + ${brand.id}}"
+                   class="btn btn-outline-primary"
+                   th:text="${brand.name}">Brand Name</a>
+            </div>
+            <div class="row">
+                <div th:each="phone : ${brandPhones.content}" class="col-md-4">
+                    <div class="card">
+                        <img th:src="${phone.imageUrl}" class="card-img-top" alt="Product Image">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${phone.name}">Product Name</h5>
+                            <p class="card-text" th:text="'Price: $' + ${phone.price}">Price</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <a href="#" class="btn btn-success">Buy Now</a>
+                            <!-- Buy Now button -->
+                            <a href="#" class="btn btn-info">View Details</a>
+                            <!-- View Details button -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination -->
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${brandPhones.first} ? 'disabled' : ''">
+                            <a class="page-link" th:href="@{'/brand?brandId=' + ${brandId} + '&page=' + ${brandPhones.number - 1}}">Previous</a>
+                        </li>
+                        <li th:each="pageNum : ${#numbers.sequence(0, brandPhones.totalPages - 1)}" class="page-item" th:classappend="${pageNum == brandPhones.number} ? 'active' : ''">
+                            <a class="page-link" th:href="@{'/brand?brandId=' + ${brandId} + '&page=' + ${pageNum}}">Page Number</a>
+                        </li>
+                        <li class="page-item" th:classappend="${brandPhones.last} ? 'disabled' : ''">
+                            <a class="page-link" th:href="@{'/brand?brandId=' + ${brandId} + '&page=' + ${brandPhones.number + 1}}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+        </div>
+    </section>
+</main>
+<div th:insert="~{/footer.html}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
