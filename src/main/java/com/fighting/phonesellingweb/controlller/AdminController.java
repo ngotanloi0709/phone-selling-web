@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
+
 @Controller
 @RequestMapping("/admin")
 @AllArgsConstructor
@@ -24,6 +26,9 @@ public class AdminController {
         if (email != null) {
             User user = userService.findUserByEmail(email);
             model.addAttribute("user", user);
+            if (user.getAvatar() != null) {
+                model.addAttribute("base64Avatar", Base64.getEncoder().encodeToString(user.getAvatar()));
+            }
         }
 
         return "admin/index";

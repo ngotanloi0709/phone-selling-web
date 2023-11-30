@@ -30,6 +30,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<CartItem> carts;
 
+    @Lob
+    @Column(name = "avatar", columnDefinition = "LONGBLOB")
+    private byte[] avatar;
+
     public User(String email, String password, String name, String phone) {
         this.email = email;
         this.password = password;
