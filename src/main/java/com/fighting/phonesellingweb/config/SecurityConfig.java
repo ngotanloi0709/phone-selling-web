@@ -1,6 +1,5 @@
 package com.fighting.phonesellingweb.config;
 
-import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
