@@ -74,7 +74,7 @@
                             <a class="page-link" th:href="@{'/brand?brandId=' + ${brandId} + '&page=' + ${brandPhones.number - 1}}">Previous</a>
                         </li>
                         <li th:each="pageNum : ${#numbers.sequence(0, brandPhones.totalPages - 1)}" class="page-item" th:classappend="${pageNum == brandPhones.number} ? 'active' : ''">
-                            <a class="page-link" th:href="@{'/brand?brandId=' + ${brandId} + '&page=' + ${pageNum}}">Page Number</a>
+                            <a class="page-link" th:href="@{'/brand?brandId=' + ${brandId} + '&page=' + ${pageNum}}">[[${pageNum + 1}]]</a>
                         </li>
                         <li class="page-item" th:classappend="${brandPhones.last} ? 'disabled' : ''">
                             <a class="page-link" th:href="@{'/brand?brandId=' + ${brandId} + '&page=' + ${brandPhones.number + 1}}">Next</a>
