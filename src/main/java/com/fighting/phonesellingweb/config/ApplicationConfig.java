@@ -2,6 +2,7 @@ package com.fighting.phonesellingweb.config;
 
 import com.fighting.phonesellingweb.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,5 +42,15 @@ public class ApplicationConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public FilterRegistrationBean<SessionFilter> sessionFilter() {
+        FilterRegistrationBean<SessionFilter> registrationBean = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(new SessionFilter());
+        registrationBean.addUrlPatterns("/*");
+
+        return registrationBean;
     }
 }
