@@ -10,6 +10,7 @@ import com.fighting.phonesellingweb.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -41,7 +42,7 @@ public class HomeController {
     @GetMapping({"", "/", "/home"})
     public String home(@CookieValue(name="email", required = false) String email,
                        @RequestParam(defaultValue = "1") int page,
-                       @RequestParam(defaultValue = "3") int size,
+                       @RequestParam(defaultValue = "6") int size,
                        @RequestParam(required = false) Integer brandId,
                        Model model) {
         if (email != null) {
@@ -51,27 +52,30 @@ public class HomeController {
                 model.addAttribute("base64Avatar", Base64.getEncoder().encodeToString(user.getAvatar()));
             }
         }
-        Page<Phone> phones;
         Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Phone> phones;
         if (brandId != null) {
             phones = phoneService.findPhonesByBrand(brandId, pageable);
         } else {
             phones = phoneService.getAllPhones(pageable);
         }
-        model.addAttribute("phones", phones);
+        model.addAttribute("phones", phones.getContent());
         model.addAttribute("brands", brandService.findAllBrands());
         model.addAttribute("brandId", brandId);
 
-        // Add randomPhonePage to the model
-        Page<Phone> randomPhonePage = phoneService.findRandomPhones(pageable);
-        model.addAttribute("randomPhonePage", randomPhonePage);
-
-        // Add bestSellers to the model
+        // Fetch best sellers
         Page<Phone> bestSellingPhones = saleService.findBestSellingPhones(pageable);
-        model.addAttribute("bestSellers", bestSellingPhones);
+        model.addAttribute("bestSellers", bestSellingPhones.getContent());
+
+        // Fetch random products
+        Page<Phone> randomPhones = phoneService.findRandomPhones(pageable);
+        model.addAttribute("randomPhones", randomPhones.getContent());
+
+        // Fetch products for product list
+        Page<Phone> productList = phoneService.getAllPhones(pageable);
+        model.addAttribute("productList", productList.getContent());
 
         return "index";
-
     }
 
 //    @GetMapping("/brand/{brandId}/phones")
@@ -154,6 +158,50 @@ public class HomeController {
 
         return "random_products";
     }
+
+    @GetMapping("/product-list")
+    public String productList(@CookieValue(name="email", required = false) String email,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(required = false, defaultValue = "define") String sort,
+                              Model model) {
+
+        if (email != null) {
+            User user = userService.findUserByEmail(email);
+            model.addAttribute("user", user);
+            if (user.getAvatar() != null) {
+                model.addAttribute("base64Avatar", Base64.getEncoder().encodeToString(user.getAvatar()));
+            }
+        }
+        int productsPerPage = 9; // Define productsPerPage
+
+        // Check if sort is null or empty, if so, set it to a default value
+        if (sort == null || sort.isEmpty()) {
+            sort = "define"; // Default sorting
+        }
+
+        Sort sorting = Sort.by("name"); // Default sorting
+        if (sort.equals("high-to-low")) {
+            sorting = Sort.by("price").descending();
+        } else if (sort.equals("low-to-high")) {
+            sorting = Sort.by("price").ascending();
+        } else if (sort.equals("new-product")) {
+            sorting = Sort.by("id").descending();
+        }
+        model.addAttribute("sort", sort);
+
+        Pageable pageable = PageRequest.of(page, productsPerPage, sorting);
+        Page<Phone> productList = phoneService.getAllPhones_ProductList(sort, pageable);
+        model.addAttribute("productList", productList); // Pass the Page object, not its content
+
+        // Calculate total pages
+        long totalProducts = phoneService.countProducts();
+        int totalPages = (int) Math.ceil((double) totalProducts / productsPerPage);
+        model.addAttribute("totalPages", totalPages);
+
+        return "product_list";
+    }
+
+
 
 
 }

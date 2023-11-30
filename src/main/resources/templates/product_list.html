@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Include your head content here -->
+</head>
+<body>
+<div th:insert="~{/navbar.html}" th:with="currentUser=${currentUser}"></div>
+<main>
+    <section id="sorting">
+        <!-- Sorting options -->
+        <div class="container mt-4">
+            <h2>Sorting</h2>
+            <select id="sortPrice" class="form-control mb-3">
+                <option value="define">Define</option>
+                <option value="new-product">New Products</option>
+                <option value="low-to-high">Sort by Price (Low to High)</option>
+                <option value="high-to-low">Sort by Price (High to Low)</option>
+            </select>
+        </div>
+    </section>
+    <section id="product-list">
+        <!-- Product cards -->
+        <div class="container mt-4">
+            <h2>Product List</h2>
+            <div class="row">
+                <div th:each="phone : ${productList}" class="col-md-4">
+                    <div class="card">
+                        <img th:src="${phone.imageUrl}" class="card-img-top" alt="Product Image">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${phone.name}">Product Name</h5>
+                            <p class="card-text" th:text="'Price: $' + ${phone.price}">Price</p>
+                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${productList.first} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{'/product-list?page=' + (${productList.number - 1}) + '&sort=' + ${sort}}">Previous</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(0, productList.totalPages - 1)}" class="page-item" th:classappend="${pageNum == productList.number} ? 'active' : ''">
+                        <a class="page-link" th:href="@{'/product-list?page=' + (${pageNum}) + '&sort=' + ${sort}}">[[${pageNum + 1}]]</a>
+                    </li>
+                    <li class="page-item" th:classappend="${productList.last} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{'/product-list?page=' + (${productList.number + 1}) + '&sort=' + ${sort}}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+</main>
+<div th:insert="~{/footer.html}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('sortPrice').addEventListener('change', function() {
+        var sort = this.value;
+        var page = 0; // Reset to the first page when the sort order changes
+        window.location.href = '/product-list?page=' + page + '&sort=' + sort;
+    });
+</script>
+</body>
+</html>

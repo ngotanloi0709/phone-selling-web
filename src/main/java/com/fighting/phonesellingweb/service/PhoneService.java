@@ -3,10 +3,7 @@ package com.fighting.phonesellingweb.service;
 import com.fighting.phonesellingweb.model.Phone;
 import com.fighting.phonesellingweb.repository.PhoneRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -84,4 +81,23 @@ public class PhoneService {
     public long countProducts() {
         return phoneRepository.count();
     }
+
+    public Page<Phone> getAllPhones_ProductList(String sort, Pageable pageable) {
+        Pageable sortedPageable;
+        if (sort.equals("high-to-low")) {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "price"));
+        } else if (sort.equals("low-to-high")) {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.ASC, "price"));
+        } else if (sort.equals("new-product")) {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+        } else {
+            sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.unsorted());
+        }
+        return phoneRepository.findAll(sortedPageable);
+    }
+
+
+
+
+
 }

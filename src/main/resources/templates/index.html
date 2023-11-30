@@ -72,7 +72,7 @@
 
         <div id="bestSellerCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
                 <div class="carousel-inner">
-                    <div th:each="phone, stat : ${bestSellers.content}" class="carousel-item" th:classappend="${stat.index == 0} ? 'active' : ''">
+                    <div th:each="phone, stat : ${bestSellers}" class="carousel-item" th:classappend="${stat.index == 0} ? 'active' : ''">
                         <!-- Container cho hình ảnh -->
                         <div class="image-container">
                             <img th:src="@{${phone.imageUrl}}" class="d-block mx-auto" alt="Product Image" th:alt="${phone.name}">
@@ -116,7 +116,7 @@
             </div>
 
             <div class="row">
-                <div th:each="phone : ${phones.content}" class="col-md-4">
+                <div th:each="phone : ${phones}" class="col-md-4">
                     <div class="card">
                         <img th:src="${phone.imageUrl}" class="card-img-top" alt="Product Image">
                         <div class="card-body">
@@ -140,15 +140,14 @@
         <div class="container mt-4">
             <h2>Random Products</h2>
             <div class="row">
-                <div th:each="phone : ${randomPhonePage.content}" class="col-md-4">
-                    <div class="card" th:if="${phone != null}">
-                        <img th:src="${phone.imageUrl}" alt="Phone Image" th:if="${phone.imageUrl != null}" />
+                <!-- src/main/resources/templates/product_list.html -->
+                <div th:each="phone : ${randomPhones}" class="col-md-4">
+                    <div class="card">
+                        <img th:src="${phone.imageUrl}" class="card-img-top" alt="Product Image">
                         <div class="card-body">
                             <h5 class="card-title" th:text="${phone.name}">Product Name</h5>
                             <p class="card-text" th:text="'Price: $' + ${phone.price}">Price</p>
                             <a href="#" class="btn btn-primary">Add to Cart</a>
-                            <a href="#" class="btn btn-success">Buy Now</a>
-                            <a href="#" class="btn btn-info">View Details</a>
                         </div>
                     </div>
                 </div>
@@ -157,104 +156,33 @@
         </div>
     </section>
 
-    <section id="sorting">
-        <!-- Sorting options -->
-        <div class="container mt-4">
-            <h2>Sorting</h2>
-            <select class="form-control mb-3">
-                <option>Sort by Price (Low to High)</option>
-                <option>Sort by Price (High to Low)</option>
-            </select>
-        </div>
-    </section>
-
     <section id="product-list">
         <!-- Product cards -->
         <div class="container mt-4">
             <h2>Product List</h2>
             <div class="row">
-                <div class="col-md-4">
+                <!-- src/main/resources/templates/product_list.html -->
+                <div th:each="phone : ${productList}" class="col-md-4">
                     <div class="card">
-                        <img src="product10.jpg" class="card-img-top" alt="Product 10">
+                        <img th:src="${phone.imageUrl}" class="card-img-top" alt="Product Image">
                         <div class="card-body">
-                            <h5 class="card-title">Product 10</h5>
-                            <p class="card-text">Price: $100</p>
+                            <h5 class="card-title" th:text="${phone.name}">Product Name</h5>
+                            <p class="card-text" th:text="'Price: $' + ${phone.price}">Price</p>
                             <a href="#" class="btn btn-primary">Add to Cart</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="product11.jpg" class="card-img-top" alt="Product 11">
-                        <div class="card-body">
-                            <h5 class="card-title">Product 11</h5>
-                            <p class="card-text">Price: $110</p>
-                            <a href="#" class="btn btn-primary">Add to Cart</a>
-                            <a href="#" class="btn btn-success">Buy Now</a> <!-- Buy Now button -->
-                            <a href="#" class="btn btn-info">View Details</a> <!-- View Details button -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="product12.jpg" class="card-img-top" alt="Product 12">
-                        <div class="card-body">
-                            <h5 class="card-title">Product 12</h5>
-                            <p class="card-text">Price: $120</p>
-                            <a href="#" class="btn btn-primary">Add to Cart</a>
-                            <a href="#" class="btn btn-success">Buy Now</a> <!-- Buy Now button -->
-                            <a href="#" class="btn btn-info">View Details</a> <!-- View Details button -->
                         </div>
                     </div>
                 </div>
             </div>
+            <a href="/product-list" class="btn btn-primary mt-3">Xem Thêm</a>
         </div>
     </section>
+
 <!--     END HOME-->
 
 
 </main>
 <div th:insert="~{/footer.html}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<!--<script>-->
-<!--    function loadProductsByBrand() {-->
-<!--        var brandId = document.getElementById('brandSelect').value;-->
-<!--        if (brandId) {-->
-<!--            window.location.href = '/brand/' + brandId;-->
-<!--        }-->
-<!--        if (!brandId || brandId == null) {-->
-<!--            window.location.href = '/brand?brandId=1';-->
-<!--        }-->
-<!--    }-->
-<!--</script>-->
 
-<script> document.getElementById('sortPrice').addEventListener('change', function() {
-    var sortOrder = this.value;
-    sortProducts(sortOrder);
-});
-
-function sortProducts(sortOrder) {
-    var products = document.querySelectorAll('#product-list .card');
-    var productsArray = Array.prototype.slice.call(products);
-
-    productsArray.sort(function(a, b) {
-        var priceA = parseInt(a.querySelector('.card-text').textContent.replace('Price: $', ''));
-        var priceB = parseInt(b.querySelector('.card-text').textContent.replace('Price: $', ''));
-
-        if (sortOrder === 'low-to-high') {
-            return priceA - priceB;
-        } else {
-            return priceB - priceA;
-        }
-    });
-
-    var container = document.querySelector('#product-list .row');
-    container.innerHTML = '';
-
-    productsArray.forEach(function(product) {
-        container.appendChild(product);
-    });
-}
-</script>
 </body>
 </html>
