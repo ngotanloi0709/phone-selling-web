@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,9 @@ public class HomeController {
         if (email != null) {
             User user = userService.findUserByEmail(email);
             model.addAttribute("user", user);
+            if (user.getAvatar() != null) {
+                model.addAttribute("base64Avatar", Base64.getEncoder().encodeToString(user.getAvatar()));
+            }
         }
         Page<Phone> phones;
         Pageable pageable = PageRequest.of(page - 1, size);

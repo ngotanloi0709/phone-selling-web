@@ -47,6 +47,136 @@
     .dropdown-menu .form-control {
         width: 100%;
     }
+    body {
+        padding-top: 80px;
+    }
+
+    main {
+        min-height: 100vh;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-color: #FFFFFF;
+        font-family: sans-serif;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    .user-menu-wrap {
+        position: relative;
+        width: 36px;
+        margin: 50px auto;
+    }
+
+    .menu-container {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    .menu-container.active {
+        visibility: visible;
+        opacity: 1;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .user-menu {
+        position: absolute;
+        right: -22px;
+        background-color: #FFFFFF;
+        width: 256px;
+        border-radius: 2px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        padding-top: 5px;
+        padding-bottom: 5px;
+        margin-top: 20px;
+    }
+
+    .user-menu .profile-highlight {
+        display: flex;
+        border-bottom: 1px solid #E0E0E0;
+        padding: 12px 16px;
+        margin-bottom: 6px;
+    }
+
+    .user-menu .profile-highlight img {
+        width: 48px;
+        height: 48px;
+        border-radius: 25px;
+        object-fit: cover;
+    }
+
+    .user-menu .profile-highlight .details {
+        display: flex;
+        flex-direction: column;
+        margin: auto 12px;
+    }
+
+    .user-menu .profile-highlight #profile-name {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .user-menu .profile-highlight #profile-footer {
+        font-weight: 300;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .user-menu .footer {
+        border-top: 1px solid #E0E0E0;
+        padding-top: 6px;
+        margin-top: 6px;
+    }
+
+    .user-menu .footer .user-menu-link {
+        font-size: 13px;
+    }
+
+    .user-menu .user-menu-link {
+        display: flex;
+        text-decoration: none;
+        color: #333333;
+        font-weight: 400;
+        font-size: 14px;
+        padding: 12px 16px;
+    }
+
+    .user-menu .user-menu-link div {
+        margin: auto 10px;
+    }
+
+    .user-menu .user-menu-link:hover {
+        background-color: #F5F5F5;
+        color: #333333;
+    }
+
+    .user-menu:before {
+        position: absolute;
+        top: -16px;
+        left: 120px;
+        display: inline-block;
+        content: "";
+        border: 8px solid transparent;
+        border-bottom-color: #E0E0E0;
+    }
+
+    .user-menu:after {
+        position: absolute;
+        top: -14px;
+        left: 121px;
+        display: inline-block;
+        content: "";
+        border: 7px solid transparent;
+        border-bottom-color: #FFFFFF;
+    }
 </style>
 <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary" th:fragment="navbar(currentUser)">
     <div class="container">
@@ -79,12 +209,123 @@
                     <a class="nav-link" th:if="${user}" th:text="'Xin chào ' + ${user.getName()}"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="${user}" href="/account/logout">Đăng xuất</a>
+                    <div class="" th:if="${user}">
+
+                        <a class="mini-photo-wrapper" href="#">
+                            <img class="mini-photo"
+                                 th:if="${base64Avatar != null and !base64Avatar.isEmpty()}"
+                                 th:src="'data:image/jpeg;base64,' + ${base64Avatar}"
+                                 width="36"
+                                 height="36"/>
+                            <img class="mini-photo"
+                                 th:unless="${base64Avatar != null and !base64Avatar.isEmpty()}"
+                                 src="https://www.gravatar.com/avatar/?d=identicon"
+                                 width="36"
+                                 height="36"/>
+                        </a>
+
+                        <div class="menu-container">
+                            <ul class="user-menu">
+                                <div class="profile-highlight">
+                                    <img class="mini-photo"
+                                         th:if="${base64Avatar != null and !base64Avatar.isEmpty()}"
+                                         th:src="'data:image/jpeg;base64,' + ${base64Avatar}"
+                                         width="36"
+                                         height="36"/>
+                                    <img class="mini-photo"
+                                         th:unless="${base64Avatar != null and !base64Avatar.isEmpty()}"
+                                         src="https://www.gravatar.com/avatar/?d=identicon"
+                                         width="36"
+                                         height="36"/>
+                                    <div class="details">
+                                        <div id="profile-name" th:text="${user.getName()}"></div>
+                                    </div>
+                                </div>
+                                <li class="user-menu__item">
+                                    <a class="user-menu-link" href="/account/profile">
+                                        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1604623/trophy.png" alt="trophy_icon" width=20 height=20>
+                                        <div>Thông tin cá nhân</div>
+                                    </a>
+                                </li>
+                                <li class="user-menu__item">
+                                    <a class="user-menu-link" href="/account/change-pwd">
+                                        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1604623/team.png" alt="team_icon" width=20 height=20 >
+                                        <div>Đổi mật khẩu</div>
+                                    </a>
+                                </li>
+                                <div class="footer">
+                                    <li class="user-menu__item"><a class="user-menu-link" href="/account/logout" style="color: #F44336;">Đăng xuất</a></li>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item ">
                     <a class="nav-link" th:if="${user == null}" href="/account/login">Đăng nhập</a>
                 </li>
             </ul>
+<!--            <a th:href="@{/cart}" class="nav-link" href="/cart">Giỏ hàng</a>-->
+<!--            <div style="margin-left: 20rem" th:if="${user}" th:text="'Xin chào ' + ${user.getName()}"></div>-->
+<!--            <ul class="navbar-nav ms-auto" >-->
+<!--                <a th:href="@{/cart}" class="nav-link" href="/cart">Giỏ hàng</a>-->
+<!--                <a class="nav-link" th:if="${user == null}" href="/account/login">Đăng nhập</a>-->
+
+<!--                <div class="user-menu-wrap" th:if="${user}">-->
+
+<!--                    <a class="mini-photo-wrapper" href="#">-->
+<!--                        <img class="mini-photo"-->
+<!--                             th:if="${base64Avatar != null and !base64Avatar.isEmpty()}"-->
+<!--                             th:src="'data:image/jpeg;base64,' + ${base64Avatar}"-->
+<!--                             width="36"-->
+<!--                             height="36"/>-->
+<!--                        <img class="mini-photo"-->
+<!--                             th:unless="${base64Avatar != null and !base64Avatar.isEmpty()}"-->
+<!--                             src="https://www.gravatar.com/avatar/?d=identicon"-->
+<!--                             width="36"-->
+<!--                             height="36"/>-->
+<!--                    </a>-->
+
+<!--                    <div class="menu-container">-->
+<!--                        <ul class="user-menu">-->
+<!--                            <div class="profile-highlight">-->
+<!--                                <img class="mini-photo"-->
+<!--                                     th:if="${base64Avatar != null and !base64Avatar.isEmpty()}"-->
+<!--                                     th:src="'data:image/jpeg;base64,' + ${base64Avatar}"-->
+<!--                                     width="36"-->
+<!--                                     height="36"/>-->
+<!--                                <img class="mini-photo"-->
+<!--                                     th:unless="${base64Avatar != null and !base64Avatar.isEmpty()}"-->
+<!--                                     src="https://www.gravatar.com/avatar/?d=identicon"-->
+<!--                                     width="36"-->
+<!--                                     height="36"/>-->
+<!--                                <div class="details">-->
+<!--                                    <div id="profile-name" th:text="${user.getName()}"></div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <li class="user-menu__item">-->
+<!--                                <a class="user-menu-link" href="/account/profile">-->
+<!--                                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1604623/trophy.png" alt="trophy_icon" width=20 height=20>-->
+<!--                                    <div>Thông tin cá nhân</div>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li class="user-menu__item">-->
+<!--                                <a class="user-menu-link" href="/account/change-pwd">-->
+<!--                                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1604623/team.png" alt="team_icon" width=20 height=20 >-->
+<!--                                    <div>Đổi mật khẩu</div>-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <div class="footer">-->
+<!--                                <li class="user-menu__item"><a class="user-menu-link" href="/account/logout" style="color: #F44336;">Đăng xuất</a></li>-->
+<!--                            </div>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </ul>-->
         </div>
     </div>
 </nav>
+<script>
+    document.querySelector('.mini-photo-wrapper').addEventListener('click', function() {
+        document.querySelector('.menu-container').classList.toggle('active');
+    });
+</script>
