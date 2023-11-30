@@ -27,8 +27,10 @@ public class SessionFilter implements Filter {
         if (cookies != null) {
             boolean hasEmailCookie = Arrays.stream(cookies)
                     .anyMatch(cookie -> cookie.getName().equals("email"));
+            boolean hasJSessionIdCookie = Arrays.stream(cookies)
+                    .anyMatch(cookie -> cookie.getName().equals("JSESSIONID"));
 
-            if (!hasEmailCookie) {
+            if (!hasEmailCookie && hasJSessionIdCookie) {
                 Cookie email = new Cookie("email", null);
                 email.setMaxAge(0);
                 email.setPath("/");
