@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +24,12 @@ public class UserService {
             return null;
         }
     }
+
+    public Optional<User> findUserByEmailOptional(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+
 
     public User findUserById(Integer id) {
         return userRepository.findById(id).orElse(null);
@@ -52,6 +59,15 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void resetPassword(String email, String newPassword) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setPassword(newPassword);
+            userRepository.save(user);
+        }
+    }
+
     public void updateUser(User user) {
         userRepository.save(user);
     }
@@ -59,4 +75,6 @@ public class UserService {
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
+
+
 }
