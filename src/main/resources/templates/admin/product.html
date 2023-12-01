@@ -5,6 +5,7 @@
     <title>Quản lý sản phẩm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="/static/css/table.css" rel="stylesheet">
 </head>
 <body>
@@ -80,25 +81,113 @@
                             <td th:text="${brand.id}"></td>
                             <td th:text="${brand.name}"></td>
                             <td class="no-wrap">
-                                <a th:href="@{/admin/product/brand/edit/{id}(id=${brand.id})}">
+                                <a data-bs-toggle="modal" data-bs-target="#editBrandModal"
+                                    th:data-id="${brand.id}" th:data-name="${brand.name}">
                                     <button class="btn btn-success">Chỉnh sửa</button>
                                 </a>
                             </td>
                             <td class="no-wrap">
-                                <form th:action="@{/admin/product/brand/delete/{id}(id=${brand.id})}" method="post">
-                                    <button class="btn btn-danger" type="submit">Xóa</button>
-                                </form>
+                                <a data-bs-toggle="modal" data-bs-target="#deleteBrandModal"
+                                    th:data-id="${brand.id}">
+                                    <button class="btn btn-danger">Xóa</button>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <form th:action="@{/admin/product/brand/add}">
-                    <button class="btn btn-success" type="submit">Thêm Thương hiệu mới</button>
-                </form>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBrandModal">
+                    Thêm Thương hiệu mới
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addBrandModal" tabindex="-1" aria-labelledby="addBrandModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBrandModalLabel">Thêm Thương hiệu mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/admin/product/brand/add}" method="post">
+                        <div class="mb-3">
+                            <label for="brandName" class="form-label">Tên thương hiệu</label>
+                            <input type="text" class="form-control" id="brandName" name="name">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Thêm thương hiệu</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editBrandModal" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editBrandModalLabel">Chỉnh sửa thông tin thương hiệu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:method="post" th:action="@{/admin/product/brand/edit}" th:object="${brand}">
+                        <input type="hidden" class="form-control" id="editBrandId" name="id" th:field="*{id}">
+                        <div class="mb-3">
+                            <label for="editBrandName" class="form-label">Tên thương hiệu</label>
+                            <input type="text" class="form-control" id="editBrandName" name="name" th:field="*{name}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteBrandModal" tabindex="-1" aria-labelledby="deleteBrandModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteBrandModalLabel">Xác nhận xóa thương hiệu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa thương hiệu này không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <form th:action="@{/admin/product/brand/delete}" method="post">
+                        <input type="hidden" name="id">
+                        <button class="btn btn-danger" type="submit">Xóa</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </main>
 <div th:insert="~{/footer.html}"></div>
+
+<script>
+    $(document).ready(function() {
+        $('#editBrandModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var brandId = button.data('id');
+            var brandName = button.data('name');
+
+            var modal = $(this);
+            modal.find('.modal-body #editBrandId').val(brandId);
+            modal.find('.modal-body #editBrandName').val(brandName);
+        });
+
+        $(document).ready(function() {
+            $('#deleteBrandModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var brandId = button.data('id');
+
+                var modal = $(this);
+                modal.find('.modal-footer form input[name="id"]').val(brandId);
+            });
+        });
+    });
+</script>
 </body>
 </html>

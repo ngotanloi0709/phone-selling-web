@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -16,7 +17,11 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User findUserByEmail(String email) {
-        return (User) userRepository.findByEmail(email).orElseThrow();
+        try {
+            return userRepository.findByEmail(email).orElseThrow();
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
     public User findUserById(Integer id) {

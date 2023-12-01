@@ -27,6 +27,7 @@ public class AdminController {
     @GetMapping("/user")
     public String getUser(Model model) {
         model.addAttribute("users", userService.findAllUsers());
+        model.addAttribute("mapUser", new User());
 
         return "admin/user";
     }
@@ -35,6 +36,8 @@ public class AdminController {
     public String getProduct(Model model) {
         model.addAttribute("phones", phoneService.findAllPhones());
         model.addAttribute("brands", brandService.findAllBrands());
+        model.addAttribute("phone", new Phone());
+        model.addAttribute("brand", new Brand());
 
         return "admin/product";
     }
@@ -46,39 +49,31 @@ public class AdminController {
 //
 //    Code Section for user
 //
-    @GetMapping("/user/add")
-    public String showAddUserForm(Model model) {
-        model.addAttribute("userMapping", new User());
-
-        return "admin/add_user";
-    }
-
     @PostMapping("/user/add")
-    public String addUser(@ModelAttribute User userMapping) {
-        userService.createUser(userMapping);
+    public String addUser(@ModelAttribute("mapUser") User mapUser) {
+        userService.createUser(mapUser);
 
         return "redirect:/admin/user";
     }
 
-    @GetMapping("/user/edit/{id}")
-    public String editUser(@PathVariable Integer id, Model model) {
-        model.addAttribute("userMapping", userService.findUserById(id));
-        return "admin/edit_user";
-    }
-
-    @PostMapping("/user/edit/{id}")
-    public String editUser(@ModelAttribute User userMapping) {
-        if (userService.isUserExists(userMapping.getEmail())) {
+    @PostMapping("/user/edit")
+    public String editUser(@ModelAttribute("mapUser") User mapUser, @RequestParam String email) {
+        User existingUser = userService.findUserByEmail(email);
+        if (existingUser == null) {
             return "redirect:/admin/user";
         }
 
-        userService.updateUser(userMapping);
+        existingUser.setName(mapUser.getName());
+        existingUser.setAddress(mapUser.getAddress());
+        existingUser.setPhone(mapUser.getPhone());
+
+        userService.updateUser(existingUser);
 
         return "redirect:/admin/user";
     }
 
-    @PostMapping("/user/delete/{id}")
-    public String deleteUser(@PathVariable Integer id) {
+    @PostMapping("/user/delete")
+    public String deleteUser(@RequestParam Integer id) {
         userService.deleteUser(id);
 
         return "redirect:/admin/user";
@@ -125,12 +120,6 @@ public class AdminController {
 //
 //    Code Section for brand
 //
-    @GetMapping("/product/brand/add")
-    public String showAddBrandForm(Model model) {
-        model.addAttribute("brand", new Brand());
-        return "admin/add_brand";
-    }
-
     @PostMapping("/product/brand/add")
     public String addBrand(@ModelAttribute Brand brand) {
         if (brandService.isBrandExists(brand.getName())) {
@@ -142,14 +131,7 @@ public class AdminController {
         return "redirect:/admin/product";
     }
 
-    @GetMapping("/product/brand/edit/{id}")
-    public String editBrand(@PathVariable Integer id, Model model) {
-        model.addAttribute("brand", brandService.findBrandById(id));
-
-        return "admin/edit_brand";
-    }
-
-    @PostMapping("/product/brand/edit/{id}")
+    @PostMapping("/product/brand/edit")
     public String editBrand(@ModelAttribute Brand brand) {
         if (brandService.isBrandExists(brand.getName())) {
             return "redirect:/admin/product";
@@ -160,8 +142,8 @@ public class AdminController {
         return "redirect:/admin/product";
     }
 
-    @PostMapping("/product/brand/delete/{id}")
-    public String deleteBrand(@PathVariable Integer id) {
+    @PostMapping("/product/brand/delete")
+    public String deleteBrand(@RequestParam Integer id) {
         brandService.deleteBrand(id);
         return "redirect:/admin/product";
     }
