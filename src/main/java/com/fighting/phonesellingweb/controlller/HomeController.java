@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/")
 @AllArgsConstructor
@@ -143,6 +145,24 @@ public class HomeController {
 
         return "product_list";
     }
+
+    @GetMapping("/search")
+    public String search(@RequestParam String keyword,
+                         @RequestParam(defaultValue = "0") int page,
+                         @RequestParam(defaultValue = "9") int size,
+                         Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Phone> searchResults = phoneService.findPhonesByNameContaining(keyword, pageable);
+        model.addAttribute("searchResults", searchResults);
+        model.addAttribute("totalPages", searchResults.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("size", size);
+
+        return "search_results";
+    }
+
+
 
 
 
