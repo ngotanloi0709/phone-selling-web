@@ -11,8 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Base64;
-
 @Controller
 @RequestMapping("/admin")
 @AllArgsConstructor
@@ -22,37 +20,19 @@ public class AdminController {
     private BrandService brandService;
 
     @GetMapping({"", "/"})
-    public String getAdmin(@CookieValue(name="email", required = false) String email, Model model){
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-            if (user.getAvatar() != null) {
-                model.addAttribute("base64Avatar", Base64.getEncoder().encodeToString(user.getAvatar()));
-            }
-        }
-
+    public String getAdmin(){
         return "admin/index";
     }
 
     @GetMapping("/user")
-    public String getUser(@CookieValue(name="email", required = false) String email, Model model) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-        }
-
+    public String getUser(Model model) {
         model.addAttribute("users", userService.findAllUsers());
 
         return "admin/user";
     }
 
     @GetMapping("/product")
-    public String getProduct(@CookieValue(name="email", required = false) String email, Model model) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-        }
-
+    public String getProduct(Model model) {
         model.addAttribute("phones", phoneService.findAllPhones());
         model.addAttribute("brands", brandService.findAllBrands());
 
@@ -60,24 +40,14 @@ public class AdminController {
     }
 
     @GetMapping("/order")
-    public String getOrder(@CookieValue(name="email", required = false) String email, Model model){
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-        }
-
+    public String getOrder(){
         return "admin/order";
     }
 //
 //    Code Section for user
 //
     @GetMapping("/user/add")
-    public String showAddUserForm(@CookieValue(name="email", required = false) String email, Model model) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-        }
-
+    public String showAddUserForm(Model model) {
         model.addAttribute("userMapping", new User());
 
         return "admin/add_user";
@@ -91,14 +61,8 @@ public class AdminController {
     }
 
     @GetMapping("/user/edit/{id}")
-    public String editUser(@CookieValue(name="email", required = false) String email, @PathVariable Integer id, Model model) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-        }
-
+    public String editUser(@PathVariable Integer id, Model model) {
         model.addAttribute("userMapping", userService.findUserById(id));
-
         return "admin/edit_user";
     }
 
@@ -123,12 +87,7 @@ public class AdminController {
 //    Code Section for product(phone)
 //
     @GetMapping("/product/add")
-    public String showAddPhoneForm(@CookieValue(name="email", required = false) String email, Model model) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-        }
-
+    public String showAddPhoneForm(Model model) {
         model.addAttribute("phone", new Phone());
         model.addAttribute("brands", brandService.findAllBrands());
 
@@ -143,12 +102,7 @@ public class AdminController {
     }
 
     @GetMapping("/product/edit/{id}")
-    public String editPhone(@CookieValue(name="email", required = false) String email, @PathVariable Integer id, Model model) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-        }
-
+    public String editPhone(@PathVariable Integer id, Model model) {
         model.addAttribute("phone", phoneService.findPhoneById(id));
         model.addAttribute("brands", brandService.findAllBrands());
 
@@ -172,12 +126,7 @@ public class AdminController {
 //    Code Section for brand
 //
     @GetMapping("/product/brand/add")
-    public String showAddBrandForm(@CookieValue(name="email", required = false) String email, Model model) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-        }
-
+    public String showAddBrandForm(Model model) {
         model.addAttribute("brand", new Brand());
         return "admin/add_brand";
     }
@@ -194,12 +143,7 @@ public class AdminController {
     }
 
     @GetMapping("/product/brand/edit/{id}")
-    public String editBrand(@CookieValue(name="email", required = false) String email, @PathVariable Integer id, Model model) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-        }
-
+    public String editBrand(@PathVariable Integer id, Model model) {
         model.addAttribute("brand", brandService.findBrandById(id));
 
         return "admin/edit_brand";

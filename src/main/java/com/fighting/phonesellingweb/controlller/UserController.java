@@ -4,12 +4,9 @@ import com.fighting.phonesellingweb.dto.ChangePasswordRequest;
 import com.fighting.phonesellingweb.dto.ProfileUpdateRequest;
 import com.fighting.phonesellingweb.model.User;
 import com.fighting.phonesellingweb.service.UserService;
-import jakarta.servlet.http.Cookie;
+import com.fighting.phonesellingweb.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +14,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Map;
 
 @Controller
@@ -25,8 +21,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class UserController {
     private UserService userService;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
@@ -79,51 +73,20 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response, HttpSession session) {
-        Cookie email = new Cookie("email", null);
-        email.setMaxAge(0);
-        email.setPath("/");
-        Cookie jSessionId = new Cookie("JSESSIONID", null);
-        jSessionId.setMaxAge(0);
-        jSessionId.setPath("/");
-        Cookie rememberMe = new Cookie("remember-me", null);
-        rememberMe.setMaxAge(0);
-        rememberMe.setPath("/");
-
-        response.addCookie(email);
-        response.addCookie(jSessionId);
-        response.addCookie(rememberMe);
+    public String logout(HttpServletResponse response) {
+        CookieUtil.clearCookies(response);
 
         return "redirect:/";
     }
 
     @GetMapping("/profile")
-    public String getDetailUser(@CookieValue(name = "email", required = false) String email, Model model) {
-        if (email == null) {
-            return "login";
-        }
-
-        User user = userService.findUserByEmail(email);
-
-        if (user != null) {
-            model.addAttribute("user", user);
-
-            if (user.getAvatar() != null) {
-                String base64Avatar = Base64.getEncoder().encodeToString(user.getAvatar());
-
-                // Gửi dữ liệu base64 đến view
-                model.addAttribute("base64Avatar", base64Avatar);
-            }
-
-            return "profile";
-        }
-
-        return "redirect:/";
+    public String getDetailUser() {
+        return "profile";
     }
 
     @PostMapping("/profile")
     public String updateUser(@CookieValue(name = "email", required = false) String email,
-                             @ModelAttribute ProfileUpdateRequest request) throws IOException {
+                             @ModelAttribute ProfileUpdateRequest request) {
         if (email == null) {
             return "login";
         }
@@ -131,7 +94,7 @@ public class UserController {
         User user = userService.findUserByEmail(email);
 
         if (user != null) {
-            if (request.getAvatar().getOriginalFilename() != null && !request.getAvatar().getOriginalFilename().equals("")) {
+            if (request.getAvatar().getOriginalFilename() != null && !request.getAvatar().getOriginalFilename().isEmpty()) {
                 String fileName = StringUtils.cleanPath(request.getAvatar().getOriginalFilename());
                 if (fileName.contains("..")) {
                     System.out.println("not a a valid file");
@@ -156,57 +119,21 @@ public class UserController {
     }
 
     @GetMapping("/change-pwd")
-    public String changePwd(@CookieValue(name = "email", required = false) String email, @ModelAttribute String newPwd, Model model) {
-        if (email == null) {
-            return "login";
-        }
-
-        User user = userService.findUserByEmail(email);
-
-        if (user != null) {
-            model.addAttribute("user", user);
-
-            if (user.getAvatar() != null) {
-                String base64Avatar = Base64.getEncoder().encodeToString(user.getAvatar());
-
-                // Gửi dữ liệu base64 đến view
-                model.addAttribute("base64Avatar", base64Avatar);
-            }
-
-            return "change-password";
-        }
-
-        return "redirect:/";
+    public String changePwd() {
+        return "change-password";
     }
 
     @PostMapping("/change-pwd")
     public String changePwd(@CookieValue(name = "email", required = false) String email,
-                            @ModelAttribute ChangePasswordRequest request, HttpServletResponse response) throws IOException {
+                            @ModelAttribute ChangePasswordRequest request, HttpServletResponse response) {
         if (email == null) {
             return "login";
         }
 
         User user = userService.findUserByEmail(email);
-
-        String pwd = passwordEncoder.encode(request.getPassword());
-
-        user.setPassword(pwd);
-
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         userService.updateUser(user);
-
-        Cookie emailC = new Cookie("email", null);
-        emailC.setMaxAge(0);
-        emailC.setPath("/");
-        Cookie jSessionId = new Cookie("JSESSIONID", null);
-        jSessionId.setMaxAge(0);
-        jSessionId.setPath("/");
-        Cookie rememberMe = new Cookie("remember-me", null);
-        rememberMe.setMaxAge(0);
-        rememberMe.setPath("/");
-
-        response.addCookie(emailC);
-        response.addCookie(jSessionId);
-        response.addCookie(rememberMe);
+        CookieUtil.clearCookies(response);
 
         return "redirect:/";
     }
