@@ -23,4 +23,11 @@ public interface PhoneRepository extends JpaRepository<Phone, Integer> {
     List<Phone> findRandomPhones(Pageable pageable);
 
     long countByBrandId(Integer brandId);
+
+
+    @Query("SELECT p FROM Phone p WHERE p.name LIKE %:keyword%")
+    List<Phone> searchByName(String keyword);
+
+    @Query("SELECT p FROM Phone p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    Page<Phone> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
