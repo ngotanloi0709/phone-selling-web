@@ -15,12 +15,7 @@ public class CustomErrorController implements ErrorController {
     private UserService userService;
 
     @RequestMapping("/error")
-    public String getError(@CookieValue(name="email", required = false) String email, Model model) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-        }
-
+    public String getError() {
         return "error";
     }
 }

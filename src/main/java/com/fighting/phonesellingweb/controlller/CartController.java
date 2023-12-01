@@ -24,15 +24,6 @@ public class CartController {
 
     @GetMapping({"", "/"})
     public String getCart(@CookieValue(name="email", required = false) String email, Model model) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-
-            if (user.getAvatar() != null) {
-                model.addAttribute("base64Avatar", Base64.getEncoder().encodeToString(user.getAvatar()));
-            }
-        }
-
         List<CartItem> cartItems = cartService.getCartItems(userService.findUserByEmail(email));
         model.addAttribute("cartItems", cartItems);
 

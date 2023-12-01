@@ -26,17 +26,8 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public String getProductDetail(@CookieValue(name="email", required = false) String email,
-                                   Model model,
+    public String getProductDetail(Model model,
                                    @PathVariable("id") int id) {
-        if (email != null) {
-            User user = userService.findUserByEmail(email);
-            model.addAttribute("user", user);
-            if (user.getAvatar() != null) {
-                model.addAttribute("base64Avatar", Base64.getEncoder().encodeToString(user.getAvatar()));
-            }
-        }
-
         model.addAttribute("phone", phoneService.findPhoneById(id));
         model.addAttribute("comments", phoneService.findPhoneById(id).getComments());
 
