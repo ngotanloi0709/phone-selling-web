@@ -109,7 +109,10 @@
                 </div>
                 <div class="modal-body">
                     <form th:method="post" th:action="@{/admin/user/edit}" th:object="${mapUser}">
-                        <input type="hidden" id="edit_email" name="email" th:field="*{email}">
+                        <div class="mb-3">
+                            <label for="edit_email" class="form-label">Email</label>
+                            <input class="form-control" type="text" id="edit_email" name="name" th:field="*{email}" disabled>
+                        </div>
                         <div class="mb-3">
                             <label for="edit_name" class="form-label">Tên người dùng</label>
                             <input class="form-control" type="text" id="edit_name" name="name" th:field="*{name}">

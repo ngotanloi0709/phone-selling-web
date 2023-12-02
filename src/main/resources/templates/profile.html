@@ -12,10 +12,6 @@
     <h2>Chỉnh sửa thông tin cá nhân</h2>
     <form id="editProfileForm" method="post" th:action="@{/account/profile}" th:object="${user}" enctype="multipart/form-data" class="mb-3">
         <div class="mb-3">
-            <label for="idP" class="form-label">ID</label>
-            <input type="text" class="form-control" id="idP" name="idP" th:value="${user.getId()}" disabled>
-        </div>
-        <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="text" class="form-control" id="email" name="email" th:value="${user.getEmail()}" disabled>
         </div>
