@@ -47,24 +47,31 @@
                             <td th:text="${phone.camera}"></td>
                             <td th:text="${phone.batteryLife}"></td>
                             <td th:text="${phone.os}"></td>
-                            <td th:text="${phone.getMemory}"></td>
+                            <td th:text="${phone.memory}"></td>
                             <td th:text="${phone.imageUrl}"></td>
                             <td>
-                                <a th:href="@{/admin/product/edit/{id}(id=${phone.id})}">
+                                <a data-bs-toggle="modal" data-bs-target="#editProductModal"
+                                    th:data-id="${phone.id}" th:data-name="${phone.name}" th:data-price="${phone.price}"
+                                    th:data-description="${phone.description}" th:data-brand="${phone.brand.name}"
+                                    th:data-color="${phone.color}" th:data-cpu="${phone.cpu}" th:data-display="${phone.display}"
+                                    th:data-camera="${phone.camera}" th:data-battery-life="${phone.batteryLife}"
+                                    th:data-os="${phone.os}" th:data-memory="${phone.memory}" th:data-image-url="${phone.imageUrl}"
+                                    th:data-brand-id="${phone.brand.id}">
+
                                     <button class="btn btn-success">Chỉnh sửa</button>
                                 </a>
                             </td>
                             <td>
-                                <form th:action="@{/admin/product/delete/{id}(id=${phone.id})}" method="post">
-                                    <button class="btn btn-danger" type="submit">Xóa</button>
-                                </form>
+                                <a data-bs-toggle="modal" data-bs-target="#deleteProductModal" th:data-id="${phone.id}">
+                                    <button class="btn btn-danger">Xóa</button>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <form th:action="@{/admin/product/add}">
-                    <button class="btn btn-success" type="submit">Thêm Điện thoại mới</button>
-                </form>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    Thêm Điện thoại mới
+                </button>
 
                 <h1>Danh sách Thương hiệu</h1>
                 <table class="table table-bordered table-striped table-hover">
@@ -98,6 +105,139 @@
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBrandModal">
                     Thêm Thương hiệu mới
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Thêm Sản phẩm mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/admin/product/add}" method="post" th:object="${phone}" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Tên sản phẩm</label>
+                            <input type="text" class="form-control" id="productName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPrice" class="form-label">Giá</label>
+                            <input type="number" class="form-control" id="productPrice" name="price" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productDescription" class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="productDescription" name="description" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productBrand" class="form-label">Hãng</label>
+                            <select id="productBrand" name="brand" class="form-control" required>
+                                <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productColor" class="form-label">Màu sắc</label>
+                            <input type="text" class="form-control" id="productColor" name="color" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productCpu" class="form-label">CPU</label>
+                            <input type="text" class="form-control" id="productCpu" name="cpu" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productDisplay" class="form-label">Màn hình</label>
+                            <input type="text" class="form-control" id="productDisplay" name="display" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productCamera" class="form-label">Máy ảnh</label>
+                            <input type="text" class="form-control" id="productCamera" name="camera" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productBatteryLife" class="form-label">Thời lượng pin</label>
+                            <input type="text" class="form-control" id="productBatteryLife" name="batteryLife" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productOs" class="form-label">Hệ điều hành</label>
+                            <input type="text" class="form-control" id="productOs" name="os" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productMemory" class="form-label">Bộ nhớ</label>
+                            <input type="text" class="form-control" id="productMemory" name="memory" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productImageUrl" class="form-label">Đường link ảnh</label>
+                            <input type="text" class="form-control" id="productImageUrl" name="imageUrl" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa thông tin sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:method="post" th:action="@{/admin/product/edit}" th:object="${phone}">
+                        <input type="hidden" class="form-control" id="editProductId" name="id" th:field="*{id}">
+                        <div class="mb-3">
+                            <label for="editProductName" class="form-label">Tên sản phẩm</label>
+                            <input type="text" class="form-control" id="editProductName" name="name" th:field="*{name}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductPrice" class="form-label">Giá</label>
+                            <input type="number" class="form-control" id="editProductPrice" name="price" th:field="*{price}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductDescription" class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="editProductDescription" name="description" th:field="*{description}" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductBrand" class="form-label">Hãng</label>
+                            <select id="editProductBrand" name="brand" class="form-control" required>
+                                <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductColor" class="form-label">Màu sắc</label>
+                            <input type="text" class="form-control" id="editProductColor" name="color" th:field="*{color}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductCpu" class="form-label">CPU</label>
+                            <input type="text" class="form-control" id="editProductCpu" name="cpu" th:field="*{cpu}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductDisplay" class="form-label">Màn hình</label>
+                            <input type="text" class="form-control" id="editProductDisplay" name="display" th:field="*{display}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductCamera" class="form-label">Máy ảnh</label>
+                            <input type="text" class="form-control" id="editProductCamera" name="camera" th:field="*{camera}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductBatteryLife" class="form-label">Thời lượng pin</label>
+                            <input type="text" class="form-control" id="editProductBatteryLife" name="batteryLife" th:field="*{batteryLife}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductOs" class="form-label">Hệ điều hành</label>
+                            <input type="text" class="form-control" id="editProductOs" name="os" th:field="*{os}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductMemory" class="form-label">Bộ nhớ</label>
+                            <input type="text" class="form-control" id="editProductMemory" name="memory" th:field="*{memory}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductImageUrl" class="form-label">Đường link ảnh</label>
+                            <input type="text" class="form-control" id="editProductImageUrl" name="imageUrl" th:field="*{imageUrl}" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -167,6 +307,41 @@
 <div th:insert="~{/footer.html}"></div>
 
 <script>
+    $(document).ready(function() {
+        $('#editProductModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var productId = button.data('id');
+            var productName = button.data('name');
+            var productPrice = button.data('price');
+            var productDescription = button.data('description');
+            var productBrand = button.data('brand');
+            var productColor = button.data('color');
+            var productCpu = button.data('cpu');
+            var productDisplay = button.data('display');
+            var productCamera = button.data('camera');
+            var productBatteryLife = button.data('batteryLife');
+            var productOs = button.data('os');
+            var productMemory = button.data('memory');
+            var productImageUrl = button.data('imageUrl');
+            var productBrandId = button.data('brand-id');
+
+            var modal = $(this);
+            modal.find('.modal-body #editProductId').val(productId);
+            modal.find('.modal-body #editProductName').val(productName);
+            modal.find('.modal-body #editProductPrice').val(productPrice);
+            modal.find('.modal-body #editProductDescription').val(productDescription);
+            modal.find('.modal-body #editProductBrand').val(productBrandId);
+            modal.find('.modal-body #editProductColor').val(productColor);
+            modal.find('.modal-body #editProductCpu').val(productCpu);
+            modal.find('.modal-body #editProductDisplay').val(productDisplay);
+            modal.find('.modal-body #editProductCamera').val(productCamera);
+            modal.find('.modal-body #editProductBatteryLife').val(productBatteryLife);
+            modal.find('.modal-body #editProductOs').val(productOs);
+            modal.find('.modal-body #editProductMemory').val(productMemory);
+            modal.find('.modal-body #editProductImageUrl').val(productImageUrl);
+        });
+    });
+
     $(document).ready(function() {
         $('#editBrandModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);

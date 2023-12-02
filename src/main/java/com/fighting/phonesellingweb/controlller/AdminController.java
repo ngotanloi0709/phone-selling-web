@@ -81,14 +81,6 @@ public class AdminController {
 //
 //    Code Section for product(phone)
 //
-    @GetMapping("/product/add")
-    public String showAddPhoneForm(Model model) {
-        model.addAttribute("phone", new Phone());
-        model.addAttribute("brands", brandService.findAllBrands());
-
-        return "admin/add_phone";
-    }
-
     @PostMapping("/product/add")
     public String addPhone(@ModelAttribute Phone phone) {
         phoneService.createPhone(phone);
@@ -96,23 +88,15 @@ public class AdminController {
         return "redirect:/admin/product";
     }
 
-    @GetMapping("/product/edit/{id}")
-    public String editPhone(@PathVariable Integer id, Model model) {
-        model.addAttribute("phone", phoneService.findPhoneById(id));
-        model.addAttribute("brands", brandService.findAllBrands());
-
-        return "admin/edit_phone";
-    }
-
-    @PostMapping("/product/edit/{id}")
+    @PostMapping("/product/edit")
     public String editPhone(@ModelAttribute Phone phone) {
         phoneService.updatePhone(phone);
 
         return "redirect:/admin/product";
     }
 
-    @PostMapping("/product/delete/{id}")
-    public String deletePhone(@PathVariable Integer id) {
+    @PostMapping("/product/delete")
+    public String deletePhone(@RequestParam Integer id) {
         phoneService.deletePhone(id);
 
         return "redirect:/admin/product";
