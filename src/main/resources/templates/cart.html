@@ -62,6 +62,32 @@
         </div>
     </div>
 </main>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var checkoutButton = document.querySelector('form[action="@{/cart/checkout}"] button[type="submit"]');
+        if (checkoutButton) {
+            checkoutButton.addEventListener('click', function(event) {
+                // Lấy dữ liệu giỏ hàng từ các phần tử DOM và lưu vào localStorage
+                var cartData = collectCartData();
+                localStorage.setItem('cartData', JSON.stringify(cartData));
+            });
+        }
+
+        function collectCartData() {
+            // Hàm này sẽ thu thập dữ liệu từ giỏ hàng
+            // Ví dụ: Lấy thông tin từ các hàng của bảng giỏ hàng
+            var cartItems = document.querySelectorAll('tr[th:each="cartItem : ${cartItems}"]');
+            var data = [];
+            cartItems.forEach(function(item) {
+                // Thu thập và xử lý dữ liệu từ mỗi hàng
+                // Ví dụ: item.querySelector('td').textContent
+                // Lưu ý: Bạn cần điều chỉnh cách thu thập dữ liệu cho phù hợp với cấu trúc HTML của bạn
+            });
+            return data;
+        }
+    });
+</script>
+
 <div th:insert="~{/footer.html}"></div>
 </body>
 </html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Giỏ Hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        /* Add your custom CSS here */
+        .btn_DH {
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text */
+            padding: 10px 20px; /* Some padding */
+            border: none; /* No borders */
+            cursor: pointer; /* Pointer/hand icon */
+            width: 100%; /* Set a width if needed */
+            display: block; /* Make the buttons appear below each other */
+        }
+
+        .btn_DH:hover {
+            background-color: #0056b3; /* Darker blue background on hover */
+        }
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Payment button styles */
+        .payment-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: none; /* Remove border */
+        }
+
+        .payment-icon {
+            margin-right: 10px;
+            width: 24px; /* Icon size */
+            height: 24px; /* Icon size */
+        }
+    </style>
+</head>
+
+<body>
+<div th:insert="~{/navbar.html}"></div>
+<main>
+    <div class="container">
+        <section class="h-100 h-custom">
+            <div class="container h-100 py-5">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Sản Phẩm</th>
+                                    <th scope="col">Đơn Giá</th>
+                                    <th scope="col">Số Lượng</th>
+                                    <th scope="col">Thành Tiền</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item : ${cartItems}">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img th:src="${item.phone.imageUrl}" class="img-fluid rounded-3" style="width: 120px;" alt="" th:alt="${item.phone.name}">
+                                            <div class="flex-column ms-4">
+                                                <p class="mb-2" th:text="${item.phone.name}"></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:text="${item.phone.price}"></td>
+                                    <td th:text="${item.quantity}"></td>
+                                    <td th:text="${item.quantity * item.phone.price} + ' VNĐ'"></td>
+                                    <td>
+                                    <td class="align-middle"><button class="btn btn-danger" ng-click="cart.remove(item.product_id)">Xóa</button></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <form class="card shadow-2-strong mb-5 mb-lg-0" style="border-radius: 16px;" name="userForm" novalidate>
+                            <div class="card-body p-4">
+                                    <div class="col-md-9 col-lg-4 col-xl-9">
+                                        <div class="row">
+                                            <div class="col-12 col-xl-12">
+                                                <div class="form-outline mb-4 mb-xl-5">
+                                                    <label class="form-label" for="typeExp">Tên Người Nhận</label>
+                                                    <input type="text" id="name" name="name" th:value="${user.name}" class="form-control form-control-lg" placeholder="Tên người nhận" readonly/>
+                                                </div>
+                                                <div class="form-outline mb-4 mb-xl-5">
+                                                    <label class="form-label" for="typeExp">Email</label>
+                                                    <input type="text" id="email" name="email" th:value="${user.email}" class="form-control form-control-lg" placeholder="Email" readonly/>
+                                                </div>
+                                                <div class="form-outline mb-4 mb-xl-5">
+                                                    <label class="form-label" for="typeExp">Số Điện Thoại</label>
+                                                    <input type="text" id="phone" name="phone" th:value="${user.phone}" class="form-control form-control-lg" placeholder="Số điện thoại" readonly/>
+                                                </div>
+                                                <div class="form-outline mb-4 mb-xl-5">
+                                                    <label class="form-label" for="typeName">Địa chỉ</label>
+                                                    <textarea id="address" name="address" th:text="${user.address}" class="form-control form-control-lg" placeholder="Địa chỉ"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-xl-3">
+                                        <div class="d-flex justify-content-between" style="font-weight: 500;">
+                                            <p class="mb-2">Tổng tiền hàng</p>
+                                            <p th:text="'Total: ' + ${total}"></p>
+                                        </div>
+                                        <div class="d-flex justify-content-between" style="font-weight: 500;">
+                                            <p class="mb-0">Phí vận chuyển</p>
+                                            <p class="mb-0">0 VNĐ</p>
+                                        </div>
+                                        <hr class="my-4">
+                                        <div class="d-flex justify-content-between mb-4" style="font-weight: 500;">
+                                            <p class="mb-2">Tổng Thanh Toán</p>
+                                            <p class="mb-2" style="color: red;">{{cart.amount | number : 3}} VNĐ</p>
+                                        </div>
+                                        <button class="btn_DH" ng-click="order.purchase()">
+                                            <span>Đặt Hàng</span>
+                                        </button>
+                                    </div>
+                             </div>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+<div th:insert="~{/footer.html}"></div>
+
+<!-- Modal -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <span class="close">×</span>
+        <p>Chọn phương thức thanh toán:</p>
+        <button type="button" class="btn btn-primary payment-button">
+            <img class="payment-icon" src="/path/to/cash-on-delivery-icon.png" alt="Cash on Delivery"> Thanh toán khi nhận hàng
+        </button>
+        <button type="button" class="btn btn-primary payment-button">
+            <img class="payment-icon" src="/path/to/paypal-icon.png" alt="PayPal"> Thanh toán bằng PayPal
+        </button>
+        <button type="button" class="btn btn-primary payment-button">
+            <img class="payment-icon" src="/path/to/vnpay-icon.png" alt="VNPay"> Thanh toán bằng VNPay
+        </button>
+    </div>
+</div>
+
+
+<script>
+    // Get the modal
+    var modal = document.getElementById("paymentModal");
+
+    // Get the button that opens the modal
+    var btn = document.querySelector(".btn_DH");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal
+    btn.onclick = function(event) {
+        event.stopPropagation(); // Prevent event bubbling
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+<script>
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    window.onload = function() {
+        document.getElementById('typeExp exp').value = getCookie('name');
+        document.getElementById('typeExp exp').value = getCookie('email');
+        document.getElementById('typeExp').value = getCookie('phone');
+        document.getElementById('typeName').value = getCookie('address');
+    }
+</script>
+
+</body>
+</html>
