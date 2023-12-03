@@ -92,18 +92,12 @@
 <body>
 <div th:insert="~{/navbar.html}"></div>
 <main>
-
-
-
-
-<!--   START HOME>-->
-    <section id="best-sellers">
-        <!-- Best-selling products -->
+    <section id="best-sellers" th:if="${#lists.size(bestSellers) > 0}">
         <div class="container mt-4">
-        <h2>Top 10 Best Sellers</h2>
-        <p class="text-center">Dưới đây là danh sách 10 sản phẩm bán chạy nhất của chúng tôi.</p>
+            <h2>Top 10 Sản phẩm bán chạy</h2>
+            <p class="text-center">Dưới đây là danh sách 10 sản phẩm bán chạy nhất của chúng tôi.</p>
 
-        <div id="bestSellerCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+            <div id="bestSellerCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
                 <div class="carousel-inner">
                     <div th:each="phone, stat : ${bestSellers}" class="carousel-item" th:classappend="${stat.index == 0} ? 'active' : ''">
                         <!-- Container cho hình ảnh -->
@@ -128,26 +122,17 @@
             </div>
         </div>
     </section>
-
-
-
-
     <section id="brand-products">
-        <!-- Products based on brand -->
-        <!-- Tạo nút xem thêm để khi ấn select brand để có thể xem thêm các sản phẩm từ select đó -->
-
         <div class="container mt-4">
-            <h2>Brand Products</h2>
-            <div class="btn-group" role="group" aria-label="Brand selection">
+            <h2>Sản phẩm theo thương hiệu</h2>
+            <div class="btn-group mb-4" role="group" aria-label="Brand selection">
                 <a th:each="brand : ${brands}"
-                   th:href="@{'/?brandId=' + ${brand.id}}"
-                   class="btn btn-outline-primary"
-                   th:text="${brand.name}">Brand Name</a>
+                th:href="@{'/?brandId=' + ${brand.id}}"
+                class="btn btn-outline-primary"
+                th:text="${brand.name}">Brand Name</a>
             </div>
-            <div>
-
-            </div>
-
+        <div>
+        </div>
             <div class="row">
                 <div th:each="phone : ${phones}" class="col-md-4">
                     <div class="card">
@@ -155,25 +140,31 @@
                         <div class="card-body">
                             <h5 class="card-title" th:text="${phone.name}">Product Name</h5>
                             <p class="card-text" th:text="'Price: $' + ${phone.price}">Price</p>
-                            <form th:action="@{/cart/add/{id}(id=${phone.id})}" method="post">
-                                <button type="submit" class="btn btn-primary">Add to Cart</button>
-                            </form>
-                            <a href="#" class="btn btn-success">Buy Now</a>
-                            <!-- Buy Now button -->
-                            <a href="#" class="btn btn-info">View Details</a>
-                            <!-- View Details button -->
+                            <div class="btn-group" role="group">
+                                <form th:action="@{/cart/add/{id}(id=${phone.id})}" method="post">
+                                    <input type="hidden" name="productPage" value="false"/>
+                                    <button type="submit" class="btn btn-primary">Thêm vào giỏ hàng</button>
+                                </form>
+                                <form>
+                                    <button type="submit" class="btn btn-success">Mua ngay</button>
+                                </form>
+                                <form th:action="@{/product/{id}(id=${phone.id})}">
+                                    <button type="submit" class="btn btn-info">Chi tiết</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <a th:href="@{'/brand?brandId=' + ${brandId}}" class="btn btn-primary">Xem thêm</a>
+            <div th:if="${#lists.size(phones) == 0}">
+                <p>Thương hiệu không có sản phẩm nào</p>
+            </div>
+            <a th:if="${brandId != null}" th:href="@{'/brand?brandId=' + ${brandId}}" class="btn btn-primary">Xem thêm</a>
         </div>
     </section>
-
-
     <section id="random-products">
         <div class="container mt-4">
-            <h2>Random Products</h2>
+            <h2>Sản phẩm ngẫu nhiên</h2>
             <div class="row">
                 <!-- src/main/resources/templates/product_list.html -->
                 <div th:each="phone : ${randomPhones}" class="col-md-4">
@@ -182,9 +173,18 @@
                         <div class="card-body">
                             <h5 class="card-title" th:text="${phone.name}">Product Name</h5>
                             <p class="card-text" th:text="'Price: $' + ${phone.price}">Price</p>
-                            <form th:action="@{/cart/add/{id}(id=${phone.id})}" method="post">
-                                <button type="submit" class="btn btn-primary">Add to Cart</button>
-                            </form>
+                            <div class="btn-group" role="group">
+                                <form th:action="@{/cart/add/{id}(id=${phone.id})}" method="post">
+                                    <input type="hidden" name="productPage" value="false"/>
+                                    <button type="submit" class="btn btn-primary">Thêm vào giỏ hàng</button>
+                                </form>
+                                <form>
+                                    <button type="submit" class="btn btn-success">Mua ngay</button>
+                                </form>
+                                <form th:action="@{/product/{id}(id=${phone.id})}">
+                                    <button type="submit" class="btn btn-info">Chi tiết</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -196,7 +196,7 @@
     <section id="product-list">
         <!-- Product cards -->
         <div class="container mt-4">
-            <h2>Product List</h2>
+            <h2>Tất cả sản phẩm</h2>
             <div class="row">
                 <!-- src/main/resources/templates/product_list.html -->
                 <div th:each="phone : ${productList}" class="col-md-4">
@@ -205,9 +205,18 @@
                         <div class="card-body">
                             <h5 class="card-title" th:text="${phone.name}">Product Name</h5>
                             <p class="card-text" th:text="'Price: $' + ${phone.price}">Price</p>
-                            <form th:action="@{/cart/add/{id}(id=${phone.id})}" method="post">
-                                <button type="submit" class="btn btn-primary">Add to Cart</button>
-                            </form>
+                            <div class="btn-group" role="group">
+                                <form th:action="@{/cart/add/{id}(id=${phone.id})}" method="post">
+                                    <input type="hidden" name="productPage" value="false"/>
+                                    <button type="submit" class="btn btn-primary">Thêm vào giỏ hàng</button>
+                                </form>
+                                <form>
+                                    <button type="submit" class="btn btn-success">Mua ngay</button>
+                                </form>
+                                <form th:action="@{/product/{id}(id=${phone.id})}">
+                                    <button type="submit" class="btn btn-info">Chi tiết</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -215,13 +224,8 @@
             <a href="/product-list" class="btn btn-primary mt-3">Xem Thêm</a>
         </div>
     </section>
-
-<!--     END HOME-->
-
-
 </main>
 <div th:insert="~{/footer.html}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

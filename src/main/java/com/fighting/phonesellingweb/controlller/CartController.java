@@ -6,16 +6,13 @@ import com.fighting.phonesellingweb.model.User;
 import com.fighting.phonesellingweb.service.CartService;
 import com.fighting.phonesellingweb.service.PhoneService;
 import com.fighting.phonesellingweb.service.UserService;
-import com.fighting.phonesellingweb.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -44,11 +41,19 @@ public class CartController {
     }
 
     @PostMapping("/add/{id}")
-    public String addCartItem(HttpServletRequest request, @PathVariable Integer id, @RequestParam(name = "quantity", defaultValue = "1") int quantity) {
+    public String addCartItem(HttpServletRequest request,
+                              @PathVariable Integer id,
+                              @RequestParam(name = "quantity", defaultValue = "1") int quantity,
+                              @RequestParam(name = "productPage") String productPage
+    ) {
         String email = getCookieValue(request, "email");
         User user = userService.findUserByEmail(email);
         Phone phone = phoneService.findPhoneById(id);
         cartService.addCartItem(phone, user, quantity);
+
+        if (productPage != null && productPage.equals("true")) {
+            return "redirect:/product/" + id;
+        }
 
         return "redirect:/";
     }
