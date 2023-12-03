@@ -35,6 +35,9 @@
                             <td th:text="${user.email}"></td>
                             <td th:text="${user.phone}"></td>
                             <td>
+                                <a th:href="@{/admin/user/comment/{id}(id=${user.id})}"><button class="btn btn-primary">Xem bình luận</button></a>
+                            </td>
+                            <td>
                                 <a data-bs-toggle="modal" data-bs-target="#editUserModal"
                                    th:data-id="${user.id}" th:data-name="${user.name}" th:data-address="${user.address}"
                                    th:data-email="${user.email}" th:data-phone="${user.phone}">

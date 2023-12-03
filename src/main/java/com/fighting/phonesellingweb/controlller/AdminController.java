@@ -1,15 +1,19 @@
 package com.fighting.phonesellingweb.controlller;
 
 import com.fighting.phonesellingweb.model.Brand;
+import com.fighting.phonesellingweb.model.Comment;
 import com.fighting.phonesellingweb.model.Phone;
 import com.fighting.phonesellingweb.model.User;
 import com.fighting.phonesellingweb.service.BrandService;
+import com.fighting.phonesellingweb.service.CommentService;
 import com.fighting.phonesellingweb.service.PhoneService;
 import com.fighting.phonesellingweb.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -18,6 +22,7 @@ public class AdminController {
     private UserService userService;
     private PhoneService phoneService;
     private BrandService brandService;
+    private CommentService commentService;
 
     @GetMapping({"", "/"})
     public String getAdmin(){
@@ -30,6 +35,14 @@ public class AdminController {
         model.addAttribute("mapUser", new User());
 
         return "admin/user";
+    }
+
+    @GetMapping("/user/comment/{id}")
+    public String getUserComment(@PathVariable Integer id, Model model){
+        User user = userService.findUserById(id);
+        model.addAttribute("userMapping", user);
+
+        return "admin/user_comments";
     }
 
     @GetMapping("/product")
@@ -77,6 +90,13 @@ public class AdminController {
         userService.deleteUser(id);
 
         return "redirect:/admin/user";
+    }
+
+    @PostMapping("/user/comment/delete")
+    public String deleteComment(@RequestParam(name = "comment_id") Integer comment_id, @RequestParam(name = "user_id") Integer user_id) {
+        commentService.deleteComment(comment_id);
+
+        return "redirect:/admin/user/comment/" + user_id;
     }
 //
 //    Code Section for product(phone)
