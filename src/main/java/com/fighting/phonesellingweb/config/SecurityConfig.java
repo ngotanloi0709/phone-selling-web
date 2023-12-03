@@ -31,7 +31,7 @@ public class SecurityConfig {
                 // allow access to static resources
                 .requestMatchers("/static/**").permitAll()
                 // allow access to home page
-                .requestMatchers("/", "/home", "/product/{id}").permitAll()
+                .requestMatchers("/", "/home", "/product/{id}", "/search", "/random-products", "/product-list", "/brand?brandId={id}").permitAll()
                 // allow access to error page
                 .requestMatchers("/error").permitAll()
                 // allow access to authentication page
