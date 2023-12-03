@@ -26,6 +26,7 @@ public class User implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private boolean isLocked = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> carts;
@@ -43,6 +44,7 @@ public class User implements UserDetails {
         this.name = name;
         this.phone = phone;
         this.role = Role.ROLE_USER;
+        this.isLocked = false;
     }
 
     public User(String email, String password, String name, String address, String phone) {
@@ -71,7 +73,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !this.isLocked;
     }
 
     @Override
