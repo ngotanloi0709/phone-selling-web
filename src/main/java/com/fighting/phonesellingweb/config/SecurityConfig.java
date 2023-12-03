@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -51,8 +52,11 @@ public class SecurityConfig {
                 // we don't use default login page of http config because it will redirect to specific url before the cookie is added
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler((request, response, exception) -> {
-                    request.getSession().setAttribute("error", "Sai tên đăng nhập hoặc mật khẩu");
-                    response.sendRedirect("/account/login?error=true");
+                    if (exception instanceof LockedException) {
+                        response.sendRedirect("/account/login?locked=true");
+                    } else {
+                        response.sendRedirect("/account/login?error=true");
+                    }
                 })
         );
 

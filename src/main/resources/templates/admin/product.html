@@ -31,8 +31,7 @@
                             <th>Hệ điều hành</th>
                             <th>Bộ nhớ</th>
                             <th>Ảnh</th>
-                            <th>Chỉnh sửa</th>
-                            <th>Xoá</th>
+                            <th class="sticky-col">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,7 +48,7 @@
                             <td th:text="${phone.os}"></td>
                             <td th:text="${phone.memory}"></td>
                             <td th:text="${phone.imageUrl}"></td>
-                            <td>
+                            <td class="sticky-col">
                                 <a data-bs-toggle="modal" data-bs-target="#editProductModal"
                                     th:data-id="${phone.id}" th:data-name="${phone.name}" th:data-price="${phone.price}"
                                     th:data-description="${phone.description}" th:data-brand="${phone.brand.name}"
@@ -58,12 +57,10 @@
                                     th:data-os="${phone.os}" th:data-memory="${phone.memory}" th:data-image-url="${phone.imageUrl}"
                                     th:data-brand-id="${phone.brand.id}">
 
-                                    <button class="btn btn-success">Chỉnh sửa</button>
+                                    <button class="btn btn-success btn-sm">Chỉnh sửa</button>
                                 </a>
-                            </td>
-                            <td>
                                 <a data-bs-toggle="modal" data-bs-target="#deleteProductModal" th:data-id="${phone.id}">
-                                    <button class="btn btn-danger">Xóa</button>
+                                    <button class="btn btn-danger btn-sm">Xóa</button>
                                 </a>
                             </td>
                         </tr>
@@ -79,24 +76,21 @@
                         <tr>
                             <th>ID</th>
                             <th>Tên thương hiệu</th>
-                            <th>Chỉnh sửa</th>
-                            <th>Xoá</th>
+                            <th class="sticky-col">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="brand : ${brands}">
                             <td th:text="${brand.id}"></td>
                             <td th:text="${brand.name}"></td>
-                            <td class="no-wrap">
+                            <td class="sticky-col">
                                 <a data-bs-toggle="modal" data-bs-target="#editBrandModal"
                                     th:data-id="${brand.id}" th:data-name="${brand.name}">
-                                    <button class="btn btn-success">Chỉnh sửa</button>
+                                    <button class="btn btn-success btn-sm">Chỉnh sửa</button>
                                 </a>
-                            </td>
-                            <td class="no-wrap">
                                 <a data-bs-toggle="modal" data-bs-target="#deleteBrandModal"
                                     th:data-id="${brand.id}">
-                                    <button class="btn btn-danger">Xóa</button>
+                                    <button class="btn btn-danger btn-sm">Xóa</button>
                                 </a>
                             </td>
                         </tr>

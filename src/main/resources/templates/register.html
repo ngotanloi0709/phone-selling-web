@@ -75,13 +75,8 @@
                                         </div>
 
                                         <div class="col-12">
-                                            <button type="submit" class="btn btn-primary px-4 float-end mt-4">Đăng ký</button>
-                                        </div>
-                                        <div class="col-12">
-                                            <button type="button" class="btn btn-primary px-4 float-end mt-4" onclick="location.href='/account/login'">Đăng nhập</button>
-                                        </div>
-                                        <div th:if="${error}" style="color: red;">
-                                            <p th:text="${error}"></p>
+                                            <button type="submit" class="btn btn-primary px-4 float-end m-2">Đăng ký</button>
+                                            <button type="button" class="btn btn-primary px-4 float-end m-2" onclick="location.href='/account/login'">Đăng nhập</button>
                                         </div>
                                     </form>
                                 </div>
@@ -99,5 +94,15 @@
     </div>
 </main>
 <div th:insert="~{/footer.html}"></div>
+<script>
+    window.onload = function() {
+        var url = new URL(window.location.href);
+        if (url.searchParams.get('error1')) {
+            alert('Mật khẩu không khớp');
+        } else if (url.searchParams.get('error2')) {
+            alert('Email đã tồn tại');
+        }
+    }
+</script>
 </body>
 </html>

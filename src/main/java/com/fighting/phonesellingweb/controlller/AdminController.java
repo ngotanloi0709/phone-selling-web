@@ -79,6 +79,7 @@ public class AdminController {
         existingUser.setName(mapUser.getName());
         existingUser.setAddress(mapUser.getAddress());
         existingUser.setPhone(mapUser.getPhone());
+        existingUser.setLocked(mapUser.isLocked());
 
         userService.updateUser(existingUser);
 

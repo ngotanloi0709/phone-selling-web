@@ -40,10 +40,8 @@ public class UserController {
         try {
             mailSender.send(message);
         } catch (MailException e) {
-            // log the exception
             System.err.println(e.getMessage());
         }
-
     }
 
     private String generateVerificationCode() {
@@ -80,15 +78,11 @@ public class UserController {
             String phone = account.get("phone");
 
             if (!password.equals(repeatPassword)) {
-                model.addAttribute("error", "Mật khẩu không khớp");
-
-                return "register";
+                return "redirect:/account/register?error1=true";
             }
 
             if (userService.isUserExists(email)) {
-                model.addAttribute("error", "Email đã tồn tại");
-
-                return "register";
+                return "redirect:/account/register?error2=true";
             }
 
             userService.register(email, password, name, phone);

@@ -23,8 +23,8 @@
                             <th>Địa chỉ</th>
                             <th>Email</th>
                             <th>Số điện thoại</th>
-                            <th>Chỉnh sửa</th>
-                            <th>Xoá</th>
+                            <th>Bị khoá</th>
+                            <th class="sticky-col">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,19 +34,16 @@
                             <td th:text="${user.address}"></td>
                             <td th:text="${user.email}"></td>
                             <td th:text="${user.phone}"></td>
-                            <td>
-                                <a th:href="@{/admin/user/comment/{id}(id=${user.id})}"><button class="btn btn-primary">Xem bình luận</button></a>
-                            </td>
-                            <td>
+                            <td th:text="${user.locked}"></td>
+                            <td class="sticky-col">
+                                <a th:href="@{/admin/user/comment/{id}(id=${user.id})}"><button class="btn btn-primary btn-sm">Xem bình luận</button></a>
                                 <a data-bs-toggle="modal" data-bs-target="#editUserModal"
                                    th:data-id="${user.id}" th:data-name="${user.name}" th:data-address="${user.address}"
-                                   th:data-email="${user.email}" th:data-phone="${user.phone}">
-                                    <button class="btn btn-success">Chỉnh sửa</button>
+                                   th:data-email="${user.email}" th:data-phone="${user.phone}" th:data-locked="${user.locked}">
+                                    <button class="btn btn-success btn-sm">Chỉnh sửa</button>
                                 </a>
-                            </td>
-                            <td>
                                 <a data-bs-toggle="modal" data-bs-target="#deleteUserModal" th:data-id="${user.id}">
-                                    <button class="btn btn-danger">Xóa</button>
+                                    <button class="btn btn-danger btn-sm">Xóa</button>
                                 </a>
                             </td>
                         </tr>
@@ -113,8 +110,9 @@
                 <div class="modal-body">
                     <form th:method="post" th:action="@{/admin/user/edit}" th:object="${mapUser}">
                         <div class="mb-3">
-                            <label for="edit_email" class="form-label">Email</label>
-                            <input class="form-control" type="text" id="edit_email" name="name" th:field="*{email}" disabled>
+                            <label for="edit_email_display" class="form-label">Email</label>
+                            <input class="form-control" type="text" id="edit_email_display" name="name" disabled>
+                            <input type="hidden" th:field="*{email}" name="email" id="edit_email_send">
                         </div>
                         <div class="mb-3">
                             <label for="edit_name" class="form-label">Tên người dùng</label>
@@ -127,6 +125,13 @@
                         <div class="mb-3">
                             <label for="edit_phone" class="form-label">Số điện thoại</label>
                             <input class="form-control" type="text" id="edit_phone" name="phone" th:field="*{phone}"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_locked" class="form-label">Khoá</label>
+                            <select id="edit_locked" name="locked" class="form-select" th:field="*{locked}">
+                                <option value="true">Khoá</option>
+                                <option value="false">Không khoá</option>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Lưu</button>
                     </form>
@@ -166,12 +171,19 @@
             var userName = button.data('name');
             var userAddress = button.data('address');
             var userPhone = button.data('phone');
+            var userLocked = button.data('locked');
 
             var modal = $(this);
-            modal.find('.modal-body #edit_email').val(userEmail);
+            modal.find('.modal-body #edit_email_display').val(userEmail);
+            modal.find('.modal-body #edit_email_send').val(userEmail);
             modal.find('.modal-body #edit_name').val(userName);
             modal.find('.modal-body #edit_address').val(userAddress);
             modal.find('.modal-body #edit_phone').val(userPhone);
+            if(userLocked) {
+                modal.find('.modal-body #edit_locked option[value="true"]').prop('selected', true);
+            } else {
+                modal.find('.modal-body #edit_locked option[value="false"]').prop('selected', true);
+            }
         });
 
         $('#deleteUserModal').on('show.bs.modal', function(event) {
