@@ -34,6 +34,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "user")
+    private List<ProductViewHistory> viewHistory;
+
     @Lob
     @Column(name = "avatar", columnDefinition = "LONGBLOB")
     private byte[] avatar;

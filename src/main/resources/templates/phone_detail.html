@@ -12,9 +12,6 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-10">
-
-
-
             <div th:object="${phone}">
                 <div class="row justify-content-center">
                     <div class="col-md-6">
@@ -33,12 +30,16 @@
                                     <label for="quantity">Số lượng</label>
                                     <input id="quantity" type="number" name="quantity" min="1" value="1" class="form-control" style="width: 100px;"/>
                                 </div>
-                                <button class="btn btn-success mt-2" type="submit">Thêm vào giỏ hàng</button>
+                                <button class="btn btn-success btn-lg mt-2" type="submit">Thêm vào giỏ hàng</button>
+                            </form>
+                            <form th:action="@{/product/favorite/add/{id}(id=${phone.id})}" method="post" class="mb-auto">
+                                <button class="btn btn-success btn-lg mt-2" type="submit">Thêm vào yêu thích</button>
                             </form>
                             <form method="post">
-                                <button class="btn btn-success mt-2" type="submit">Mua ngay</button>
+                                <button class="btn btn-success btn-lg mt-2" type="submit">Mua ngay</button>
                             </form>
                         </div>
+                        <button id="shareButton" class="btn btn-primary btn-lg mt-2">Chia sẻ</button>
                     </div>
                 </div>
                 <div class="row justify-content-end">
@@ -87,5 +88,19 @@
 </div>
 </main>
 <div th:insert="~{/footer.html}"></div>
+<script>
+    document.getElementById('shareButton').addEventListener('click', async () => {
+        try {
+            await navigator.share({
+                title: document.title,
+                text: 'Check out this product: ' + document.title,
+                url: window.location.href,
+            })
+            console.log('Product shared successfully')
+        } catch(err) {
+            console.log('Error sharing the product: ' + err)
+        }
+    })
+</script>
 </body>
 </html>

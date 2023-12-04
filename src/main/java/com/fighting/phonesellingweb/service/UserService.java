@@ -1,5 +1,6 @@
 package com.fighting.phonesellingweb.service;
 
+import com.fighting.phonesellingweb.model.ProductViewHistory;
 import com.fighting.phonesellingweb.model.Role;
 import com.fighting.phonesellingweb.model.User;
 import com.fighting.phonesellingweb.repository.UserRepository;
@@ -79,5 +80,9 @@ public class UserService {
 
     public void saveUser(User user) {
         userRepository.save(user);
+    }
+
+    public List<ProductViewHistory> getHistory(String email) {
+        return userRepository.findByEmail(email).orElseThrow().getViewHistory();
     }
 }

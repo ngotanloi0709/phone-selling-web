@@ -34,6 +34,9 @@
         @OneToMany(mappedBy = "phone")
         private List<Comment> comments;
 
+        @OneToMany(mappedBy = "phone")
+        private List<ProductViewHistory> viewHistory;
+
         public Phone(String name, String description, double price, String color, String memory, String os, String cpu, String display, String camera, String batteryLife, String imageUrl, Brand brand) {
             this.name = name;
             this.description = description;
