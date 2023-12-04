@@ -15,7 +15,7 @@
             <div class="col-md-10">
                 <h2>Giỏ hàng</h2>
                 <div th:if="${not #lists.isEmpty(cartItems)}">
-                    <table class="table table-bordered table-striped table-hover">
+                    <table class="table table-bordered table-striped table-hover" style="display: inline-table">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">Tên sản phẩm</th>
@@ -34,12 +34,12 @@
                                 <td>
                                     <div class="btn-group">
                                         <form th:action="@{/cart/update/{id}(id=${cartItem.id})}" method="post">
-                                            <label for="quantity">Số lượng</label>
-                                            <input id="quantity" type="number" name="quantity" min="1" th:value="${cartItem.quantity}" />
-                                            <button class="btn btn-success" type="submit">Cập nhật</button>
+                                            <label class="form-label" for="quantity">Số lượng</label>
+                                            <input id="quantity" type="number" name="quantity" min="1" th:value="${cartItem.quantity}" style="width: 40px;"/>
+                                            <button class="btn btn-success btn-sm" type="submit">Cập nhật</button>
                                         </form>
                                         <form th:action="@{/cart/delete/{id}(id=${cartItem.id})}" method="post">
-                                            <button class="btn btn-danger" type="submit">Xoá</button>
+                                            <button class="btn btn-danger btn-sm" type="submit">Xoá</button>
                                         </form>
                                     </div>
                                 </td>
@@ -55,7 +55,7 @@
                 </div>
                 <div>
                     <form th:action="@{/cart/checkout}" method="post">
-                        <button class="btn btn-success" type="submit">Thanh toán</button>
+                        <button class="btn btn-success btn-lg" type="submit">Thanh toán</button>
                     </form>
                 </div>
             </div>
