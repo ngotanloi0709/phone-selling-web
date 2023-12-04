@@ -14,8 +14,8 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <h1  th:text="'Bình luận của người dùng ' + ${userMapping.getName()}"></h1>
-                <table class="table table-bordered table-striped table-hover">
+                <h1  th:text="'Bình luận của người dùng ' + ${userMapping.getEmail()}"></h1>
+                <table class="table table-bordered table-striped table-hover" style="display: inline-table;">
                     <thead class="table-light">
                         <tr>
                             <th>Tên sản phẩm</th>
@@ -33,7 +33,7 @@
                             <form action="/admin/user/comment/delete" method="post">
                                 <input type="hidden" name="user_id" th:value="${userMapping.getId()}">
                                 <input type="hidden" name="comment_id" th:value="${comment.getId()}">
-                                <button type="submit" class="btn btn-danger">Xóa</button>
+                                <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                             </form>
                         </td>
                     </tr>
