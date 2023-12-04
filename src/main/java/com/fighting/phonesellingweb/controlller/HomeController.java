@@ -1,16 +1,19 @@
 package com.fighting.phonesellingweb.controlller;
 
+import com.fighting.phonesellingweb.model.Favorite;
 import com.fighting.phonesellingweb.model.Phone;
-import com.fighting.phonesellingweb.service.BrandService;
-import com.fighting.phonesellingweb.service.PhoneService;
-import com.fighting.phonesellingweb.service.SaleService;
-import com.fighting.phonesellingweb.service.UserService;
+import com.fighting.phonesellingweb.model.ProductViewHistory;
+import com.fighting.phonesellingweb.model.User;
+import com.fighting.phonesellingweb.repository.ProductViewHistoryRepository;
+import com.fighting.phonesellingweb.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +23,12 @@ import java.util.List;
 @RequestMapping("/")
 @AllArgsConstructor
 public class HomeController {
-    private final PhoneService phoneService;
-    private final BrandService brandService;
-    private final UserService userService;
-    private final SaleService saleService;
+    private PhoneService phoneService;
+    private BrandService brandService;
+    private UserService userService;
+    private SaleService saleService;
+    private ProductViewHistoryService productViewHistoryService;
+    private FavoriteService favoriteService;
 
     @GetMapping({"", "/", "/home"})
     public String home(@RequestParam(defaultValue = "1") int page,
@@ -162,9 +167,27 @@ public class HomeController {
         return "search_results";
     }
 
+    @GetMapping("/history")
+    public String getHistory(@CookieValue(name="email", required = false) String email, Model model) {
+        User user = userService.findUserByEmail(email);
 
+        if (user != null) {
+            List<ProductViewHistory> history = productViewHistoryService.getHistory(user.getId());
+            model.addAttribute("history", history);
+        }
 
+        return "history";
+    }
 
+    @GetMapping("/favorite")
+    public String getFavorites(@CookieValue(name="email", required = false) String email, Model model) {
+        User user = userService.findUserByEmail(email);
 
+        if (user != null) {
+            List<Favorite> favorites = favoriteService.getFavoritesByUser(user);
+            model.addAttribute("favorites", favorites);
+        }
 
+        return "favorite";
+    }
 }

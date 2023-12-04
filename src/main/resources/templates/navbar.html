@@ -221,10 +221,15 @@
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
+                    <a th:href="@{/favorite}" class="nav-link" href="/history">Yêu thích</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/history}" class="nav-link" href="/history">Lịch sử</a>
+                </li>
+                <li class="nav-item">
                     <a th:href="@{/cart}" class="nav-link" href="/cart">Giỏ hàng
                         <span th:if="${cartItemsCount > 0}" class="badge bg-danger ms-1 mt-1" th:text="${cartItemsCount}"></span>
                     </a>
-
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:if="${user}" th:text="'Xin chào ' + ${user.getName()}"></a>
