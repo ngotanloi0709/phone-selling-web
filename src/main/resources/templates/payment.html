@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:insert="~{/navbar.html}"></div>
+<main>
+    <div class="container">
+        <h2>Chọn phương thức thanh toán:</h2>
+        <button class="btn btn-primary" id="cashOnDelivery" data-payment-method="Thanh toán khi nhận hàng">Thanh toán khi nhận hàng</button>
+        <button class="btn btn-primary" id="paypal" data-payment-method="Thanh toán bằng PayPal">Thanh toán bằng PayPal</button>
+        <button class="btn btn-primary" id="vnpay" data-payment-method="Thanh toán bằng VNPay">Thanh toán bằng VNPay</button>
+    </div>
+</main>
+<div th:insert="~{/footer.html}"></div>
+
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="modal">
+    <div class="modal-content">
+        <h2>Xác nhận</h2>
+        <p id="confirmationText">Bạn có chắc chắn muốn mua hàng không?</p>
+        <button id="confirmYes" class="btn btn-success">Có</button>
+        <button id="confirmNo" class="btn btn-danger">Không</button>
+    </div>
+</div>
+
+<script>
+    // Get the modal
+    var modal = document.getElementById("confirmationModal");
+
+    // Get the confirmation text
+    var confirmationText = document.getElementById("confirmationText");
+
+    // Get the payment buttons
+    var paymentButtons = document.querySelectorAll(".btn-primary");
+
+    // When the user clicks a payment button, open the modal
+    paymentButtons.forEach(function(button) {
+        button.onclick = function() {
+            var paymentMethod = this.getAttribute("data-payment-method");
+            confirmationText.textContent = "Bạn có chắc chắn muốn " + paymentMethod + " không?";
+            modal.style.display = "block";
+        }
+    });
+
+    // Get the confirmation buttons
+    var confirmYes = document.getElementById("confirmYes");
+    var confirmNo = document.getElementById("confirmNo");
+
+    // When the user clicks "Yes", close the modal and submit the form
+    confirmYes.onclick = function() {
+        modal.style.display = "none";
+        // Submit the form
+        // You need to implement this part based on your server-side logic
+    }
+
+    // When the user clicks "No", close the modal
+    confirmNo.onclick = function() {
+        modal.style.display = "none";
+    }
+</script>
+</body>
+</html>

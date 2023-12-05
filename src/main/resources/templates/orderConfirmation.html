@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Xác Nhận Đơn Hàng</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .order-confirmation {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .order-item {
+            background-color: #e9ecef;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .email-confirmation {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container order-confirmation">
+    <h1>Xác Nhận Đơn Hàng và Đã Gửi Đơn Hàng Vào Email của Bạn</h1>
+    <p>Cảm ơn bạn đã đặt hàng!</p>
+    <p>Mã Đơn Hàng: <span th:text="${order.id}"></span></p>
+    <p>Tổng Số Tiền: <span th:text="${order.totalAmount}"></span></p>
+    <h2>Mặt Hàng Trong Đơn:</h2>
+    <div>
+        <ul>
+            <li th:each="item : ${order.orderItems}" class="order-item">
+                <span th:text="${item.phone.name}"></span>:
+                <span th:text="${item.quantity}"></span> x
+                <span th:text="${item.price}"></span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="email-confirmation">
+        <p>Một email xác nhận đã được gửi đến địa chỉ email của bạn. Vui lòng kiểm tra hộp thư đến của bạn.</p>
+        <a href="https://mail.google.com/" target="_blank" class="btn btn-info">Kiểm Tra Email</a>
+    </div>
+
+    <a href="/" class="btn btn-primary" onclick="return confirm('Bạn có chắc chắn muốn quay lại trang chủ không?');">Quay Lại Trang Chủ</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
