@@ -1,9 +1,11 @@
 package com.fighting.phonesellingweb.controlller;
 
 import com.fighting.phonesellingweb.model.CartItem;
+import com.fighting.phonesellingweb.model.Order;
 import com.fighting.phonesellingweb.model.Phone;
 import com.fighting.phonesellingweb.model.User;
 import com.fighting.phonesellingweb.service.CartService;
+import com.fighting.phonesellingweb.service.OrderService;
 import com.fighting.phonesellingweb.service.PhoneService;
 import com.fighting.phonesellingweb.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -22,6 +24,7 @@ public class CartController {
     private UserService userService;
     private CartService cartService;
     private PhoneService phoneService;
+    private OrderService orderService;
 
     @GetMapping({"", "/"})
     public String getCart(HttpServletRequest request, Model model) {
@@ -110,5 +113,6 @@ public class CartController {
 
         return "cartToPay";
     }
+
 
 }

@@ -143,10 +143,13 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4 col-xl-3">
+                                <!-- Phần thông tin người dùng và tổng tiền -->
+                                <form class="card shadow-2-strong mb-5 mb-lg-0" style="border-radius: 16px;" id="userForm" novalidate>
+                                    <div class="card-body p-4">
+                                        <!-- ... thông tin người dùng ... -->
                                         <div class="d-flex justify-content-between" style="font-weight: 500;">
                                             <p class="mb-2">Tổng tiền hàng</p>
-                                            <p th:text="'Total: ' + ${total}"></p>
+                                            <p id="total" th:text="'Total: ' + ${total}"></p>
                                         </div>
                                         <div class="d-flex justify-content-between" style="font-weight: 500;">
                                             <p class="mb-0">Phí vận chuyển</p>
@@ -155,12 +158,25 @@
                                         <hr class="my-4">
                                         <div class="d-flex justify-content-between mb-4" style="font-weight: 500;">
                                             <p class="mb-2">Tổng Thanh Toán</p>
-                                            <p class="mb-2" style="color: red;">{{cart.amount | number : 3}} VNĐ</p>
+                                            <p class="mb-2" style="color: red;" id="totalPayment" th:text="${total} + ' VNĐ'"></p>
                                         </div>
-                                        <button class="btn_DH" ng-click="order.purchase()">
-                                            <span>Đặt Hàng</span>
-                                        </button>
                                     </div>
+                                </form>
+
+
+                                <div class="container">
+                                    <form id="paymentForm" action="/processPayment" method="post">
+                                        <h2>Chọn phương thức thanh toán:</h2>
+                                        <div class="payment-options">
+                                            <button type="button" class="btn btn-primary payment-option" data-payment-method="cashOnDelivery">Thanh toán khi nhận hàng</button>
+                                            <button type="button" class="btn btn-primary payment-option" data-payment-method="paypal">Thanh toán bằng PayPal</button>
+                                            <button type="button" class="btn btn-primary payment-option" data-payment-method="vnpay">Thanh toán bằng VNPay</button>
+                                        </div>
+                                        <input type="hidden" id="selectedPaymentMethod" name="paymentMethod" value="">
+                                        <button type="submit" class="btn btn-success">Đặt Hàng</button>
+                                    </form>
+
+                                </div>
                              </div>
 
                         </form>
@@ -170,56 +186,56 @@
             </div>
         </section>
 
+
+
     </div>
 </main>
 <div th:insert="~{/footer.html}"></div>
-
-<!-- Modal -->
-<div id="paymentModal" class="modal">
-    <div class="modal-content">
-        <span class="close">×</span>
-        <p>Chọn phương thức thanh toán:</p>
-        <button type="button" class="btn btn-primary payment-button">
-            <img class="payment-icon" src="/path/to/cash-on-delivery-icon.png" alt="Cash on Delivery"> Thanh toán khi nhận hàng
-        </button>
-        <button type="button" class="btn btn-primary payment-button">
-            <img class="payment-icon" src="/path/to/paypal-icon.png" alt="PayPal"> Thanh toán bằng PayPal
-        </button>
-        <button type="button" class="btn btn-primary payment-button">
-            <img class="payment-icon" src="/path/to/vnpay-icon.png" alt="VNPay"> Thanh toán bằng VNPay
-        </button>
-    </div>
-</div>
-
-
 <script>
-    // Get the modal
-    var modal = document.getElementById("paymentModal");
+    var paymentOptions = document.querySelectorAll(".payment-option");
+    var selectedPaymentMethod = document.getElementById("selectedPaymentMethod");
+    var paymentForm = document.getElementById("paymentForm");
+    var placeOrderButton = paymentForm.querySelector('button[type="submit"]');
 
-    // Get the button that opens the modal
-    var btn = document.querySelector(".btn_DH");
+    // Vô hiệu hóa nút "Đặt Hàng" ban đầu
+    placeOrderButton.disabled = true;
 
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
+    paymentOptions.forEach(function(button) {
+        button.onclick = function() {
+            var paymentMethod = this.getAttribute("data-payment-method");
+            selectedPaymentMethod.value = paymentMethod;
 
-    // When the user clicks the button, open the modal
-    btn.onclick = function(event) {
-        event.stopPropagation(); // Prevent event bubbling
-        modal.style.display = "block";
-    }
+            // Kích hoạt nút "Đặt Hàng"
+            placeOrderButton.disabled = false;
 
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
+            // Cập nhật thuộc tính 'action' của form tùy thuộc vào phương thức thanh toán được chọn
+            switch(paymentMethod) {
+                case 'cashOnDelivery':
+                    paymentForm.action = "/payment/processCashOnDelivery";
+                    break;
+                case 'paypal':
+                    paymentForm.action = "/payment/processPaypalPayment";
+                    break;
+                case 'vnpay':
+                    paymentForm.action = "/payment/processVNPayPayment";
+                    break;
+                default:
+                    paymentForm.action = "/payment/processPayment";
+            }
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+            // Làm cho nút phương thức thanh toán sáng lên khi được chọn
+            paymentOptions.forEach(function(otherButton) {
+                if (otherButton === button) {
+                    otherButton.classList.add('btn-light');
+                } else {
+                    otherButton.classList.remove('btn-light');
+                }
+            });
         }
-    }
+    });
+
 </script>
+
 <script>
     function getCookie(cname) {
         var name = cname + "=";

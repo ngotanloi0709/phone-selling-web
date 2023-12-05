@@ -23,4 +23,8 @@ public class CartItem {
     private User user;
 
     private int quantity;
+
+    public double getPrice() {
+        return phone.getPrice() * quantity;
+    }
 }
