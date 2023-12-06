@@ -37,3 +37,8 @@ public class SessionFilter implements Filter {
         chain.doFilter(request, response);
     }
 }
+
+// hàm này ông làm j á để xử lý session cho riêng biệt mỗi lần khởi động nó tự out ra á
+// cẩn thận nha, seesion trong java cũng lằng ngoàng á cái nào á ông
+// ý là session ông sài thì như cẩn thận, tại java t cấu hình session cũng lằng ngoằng. kkk
+// chỗ getdata của ông đâu

@@ -59,13 +59,10 @@ public class PaymentController {
         List<CartItem> cartItems = cartService.getCartItems(user);
         Order order = orderService.createOrder(user, cartItems);
 
-        Order completeOrder = orderService.getOrderById(order.getId());
-        if (completeOrder == null) {
-            // Handle error scenario
-            return "errorPage"; // Redirect to an appropriate error page
-        }
-        model.addAttribute("order", completeOrder);
-        sendOrderConfirmationEmail(user.getEmail(), completeOrder, user);
+
+        model.addAttribute("order", order);
+        model.addAttribute("orderItems", order.getOrderItems());
+        sendOrderConfirmationEmail(user.getEmail(), order, user);
 
         // Clear the ordered items from the cart after the order has been placed and the email has been sent
         cartService.clearCart(user, order);
@@ -74,6 +71,7 @@ public class PaymentController {
 
         return "redirect:/payment/orderConfirmation?id=" + order.getId();
     }
+
 
 
     private final String emailTemplate = "<html>\n" +
@@ -97,19 +95,6 @@ public class PaymentController {
             "            <li>Số điện thoại: ${userPhone}</li>\n" +
             "            <li>Email: ${userEmail}</li>\n" +
             "        </ul>\n" +
-            "        <h2 class=\"mt-3\">Chi tiết đơn hàng:</h2>\n" +
-            "        <table class=\"table table-bordered\">\n" +
-            "            <thead>\n" +
-            "                <tr>\n" +
-            "                    <th>Sản phẩm</th>\n" +
-            "                    <th>Số lượng</th>\n" +
-            "                    <th>Giá</th>\n" +
-            "                </tr>\n" +
-            "            </thead>\n" +
-            "            <tbody>\n" +
-            "                ${orderItem}\n" +
-            "            </tbody>\n" +
-            "        </table>\n" +
             "        <p class=\"font-weight-bold\">Tổng cộng: ${totalAmount}</p>\n" +
             "    </div>\n" +
             "</body>\n" +
@@ -120,23 +105,12 @@ public class PaymentController {
         List<OrderItem> orderItems = orderService.getOrderItemsByOrderId(order.getId());
         System.out.println("Order Items: " + order.getOrderItems());
 
-        String orderItemsHtml = order.getOrderItems().stream()
-                .map(item -> {
-                    String productName = item.getPhone() != null ? item.getPhone().getName() : "N/A";
-                    return String.format(
-                            "<tr><td>%s</td><td>%d</td><td>%.2f</td></tr>",
-                            productName, item.getQuantity(), item.getPrice()
-                    );
-                })
-                .collect(Collectors.joining());
-
         return emailTemplate
                 .replace("${userName}", user.getName())
                 .replace("${orderDate}", order.getOrderDate().toString())
                 .replace("${userAddress}", user.getAddress())
                 .replace("${userPhone}", user.getPhone())
                 .replace("${userEmail}", user.getEmail())
-                .replace("${orderItems}", orderItemsHtml)
                 .replace("${totalAmount}", String.format("%.2f", order.getTotalAmount()));
     }
 
@@ -170,6 +144,7 @@ public class PaymentController {
         }
 
         model.addAttribute("order", order);
+        model.addAttribute("orderItems", order.getOrderItems());
         return "orderConfirmation";
     }
 

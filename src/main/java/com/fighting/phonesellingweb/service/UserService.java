@@ -85,4 +85,8 @@ public class UserService {
     public List<ProductViewHistory> getHistory(String email) {
         return userRepository.findByEmail(email).orElseThrow().getViewHistory();
     }
+
+    public User getUserById(int userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
 }

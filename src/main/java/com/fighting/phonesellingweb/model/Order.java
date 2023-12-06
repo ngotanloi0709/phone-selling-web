@@ -1,5 +1,6 @@
 package com.fighting.phonesellingweb.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
+//@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -15,7 +18,7 @@ import java.util.List;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -44,6 +47,17 @@ public class Order {
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
+
+    // Trong lớp Order
+    public void addOrderItem(OrderItem orderItem) {
+        if (!this.orderItems.contains(orderItem)) {
+            this.orderItems.add(orderItem);
+            // Đã được thiết lập trong OrderItem, không cần thiết lập lại ở đây
+        }
+    }
+
+
+
 
 
 

@@ -1,26 +1,28 @@
 package com.fighting.phonesellingweb.controlller;
 
-import com.fighting.phonesellingweb.model.Brand;
-import com.fighting.phonesellingweb.model.Phone;
-import com.fighting.phonesellingweb.model.User;
-import com.fighting.phonesellingweb.service.BrandService;
-import com.fighting.phonesellingweb.service.CommentService;
-import com.fighting.phonesellingweb.service.PhoneService;
-import com.fighting.phonesellingweb.service.UserService;
+import com.fighting.phonesellingweb.model.*;
+import com.fighting.phonesellingweb.service.*;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin")
-@AllArgsConstructor
+//@AllArgsConstructor
 public class AdminController {
     private UserService userService;
     private PhoneService phoneService;
     private BrandService brandService;
     private CommentService commentService;
+    @Autowired
+    private OrderService  orderService;
+
 
     @GetMapping({"", "/"})
     public String getAdmin(){
@@ -159,4 +161,70 @@ public class AdminController {
         }
         return "redirect:/admin/product";
     }
+
+    // Code Section for order
+    @GetMapping("/orders")
+    public String listOrders(Model model) {
+        List<Order> orders = orderService.getAllOrders();
+        model.addAttribute("orders", orders);
+        model.addAttribute("order", new Order());
+        return "admin/orders";
+    }
+
+    @PostMapping("/orders/add")
+    public String addOrder(@ModelAttribute("order") Order order) {
+        for (OrderItem orderItem : order.getOrderItems()) {
+            orderItem.setOrder(order);
+        }
+        orderService.saveOrder(order);
+        return "redirect:/admin/orders";
+    }
+
+    @GetMapping("/orders/edit/{id}")
+    public String editOrder(@PathVariable("id") int id, Model model) {
+        Order order = orderService.getOrderById(id);
+        model.addAttribute("order", order);
+        return "admin/editOrder";
+    }
+
+    @PostMapping("/orders/edit")
+    public String updateOrder(@ModelAttribute("order") Order order) {
+        orderService.updateOrder(order);
+        return "redirect:/admin/orders";
+    }
+
+    @PostMapping("/orders/delete")
+    public String deleteOrder(@RequestParam("id") int id) {
+        try {
+            orderService.deleteOrder(id);
+        } catch (DataIntegrityViolationException ex) {
+            ex.printStackTrace();
+            return "redirect:/admin/orders?error=true";
+        }
+        return "redirect:/admin/orders";
+    }
+
+    @GetMapping("/getPhoneDetails/{phoneId}")
+    public ResponseEntity<Phone> getPhoneDetails(@PathVariable int phoneId) {
+        Phone phone = phoneService.getPhoneById(phoneId);
+        return ResponseEntity.ok(phone);
+    }
+
+    @GetMapping("/getUserDetails/{userId}")
+    public ResponseEntity<User> getUserDetails(@PathVariable int userId) {
+        User user = userService.getUserById(userId);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/getOrderDetails/{orderId}")
+    public ResponseEntity<Order> getOrderDetails(@PathVariable int orderId) {
+        Order order = orderService.getOrderById(orderId);
+        if (order != null) {
+            System.out.println("order: " + order);
+            return new ResponseEntity<>(order, null, 200);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
 }
