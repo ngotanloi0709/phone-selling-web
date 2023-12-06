@@ -1,11 +1,11 @@
 package com.fighting.phonesellingweb.controlller;
 
-import com.fighting.phonesellingweb.model.Favorite;
-import com.fighting.phonesellingweb.model.Phone;
-import com.fighting.phonesellingweb.model.ProductViewHistory;
-import com.fighting.phonesellingweb.model.User;
+import com.fighting.phonesellingweb.model.*;
 import com.fighting.phonesellingweb.repository.ProductViewHistoryRepository;
 import com.fighting.phonesellingweb.service.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +29,7 @@ public class HomeController {
     private SaleService saleService;
     private ProductViewHistoryService productViewHistoryService;
     private FavoriteService favoriteService;
+    private CartService cartService;
 
     @GetMapping({"", "/", "/home"})
     public String home(@RequestParam(defaultValue = "1") int page,
@@ -94,7 +95,8 @@ public class HomeController {
 
         // Calculate total pages
         long totalProducts = phoneService.countProductsByBrand(brandId);
-        int totalPages = (int) Math.ceil((double) totalProducts / 9);
+        int totalPages = totalProducts > 0 ? (int) Math.ceil((double) totalProducts / 9) : 0;
+
         model.addAttribute("totalPages", totalPages);
 
         return "brand_products";
@@ -104,16 +106,15 @@ public class HomeController {
     public String randomProducts(@RequestParam(defaultValue = "0") int page, Model model,
                                  @RequestParam(required = false, defaultValue = "1") Integer brandId) {
         int productsPerPage = 9;
+        page = Math.max(0, page);
         Pageable pageable = PageRequest.of(page, productsPerPage);
         Page<Phone> randomPhones = phoneService.findRandomPhones(pageable);
         model.addAttribute("randomPhones", randomPhones);
 
-
         // Calculate total pages
-        long totalProducts = phoneService.countProducts();
-        int totalPages = (int) Math.ceil((double) totalProducts / productsPerPage);
+        long totalProducts = phoneService.countProductsByBrand(brandId);
+        int totalPages = totalProducts > 0 ? (int) Math.ceil((double) totalProducts / productsPerPage) : 0;
         model.addAttribute("totalPages", totalPages);
-
 
         return "random_products";
     }
@@ -190,4 +191,48 @@ public class HomeController {
 
         return "favorite";
     }
+
+    private String getCookieValue(HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (name.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+
+    @PostMapping("/cart/buyNow/{id}")
+    public String buyNow(HttpServletRequest request,
+                         @PathVariable Integer id,
+                         @RequestParam(name = "quantity", defaultValue = "1") int quantity,
+                         Model model) {
+        String email = getCookieValue(request, "email");
+        User user = userService.findUserByEmail(email);
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Phone phone = phoneService.findPhoneById(id);
+        cartService.addCartItem(phone, user, quantity);
+
+        // Duplicate logic from checkout
+        List<CartItem> cartItems = cartService.getCartItems(user);
+        model.addAttribute("cartItems", cartItems);
+
+        double total = 0;
+        for (CartItem cartItem : cartItems) {
+            total += cartItem.getPhone().getPrice() * cartItem.getQuantity();
+        }
+        model.addAttribute("total", total);
+
+        return "cartToPay";
+    }
+
+
+
 }
