@@ -1,7 +1,6 @@
 package com.fighting.phonesellingweb.controlller;
 
 import com.fighting.phonesellingweb.model.Brand;
-import com.fighting.phonesellingweb.model.Comment;
 import com.fighting.phonesellingweb.model.Phone;
 import com.fighting.phonesellingweb.model.User;
 import com.fighting.phonesellingweb.service.BrandService;
@@ -9,11 +8,10 @@ import com.fighting.phonesellingweb.service.CommentService;
 import com.fighting.phonesellingweb.service.PhoneService;
 import com.fighting.phonesellingweb.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -118,8 +116,12 @@ public class AdminController {
 
     @PostMapping("/product/delete")
     public String deletePhone(@RequestParam Integer id) {
-        phoneService.deletePhone(id);
-
+        try {
+            phoneService.deletePhone(id);
+        } catch (DataIntegrityViolationException ex) {
+            ex.printStackTrace();
+            return "redirect:/admin/product?error1=true";
+        }
         return "redirect:/admin/product";
     }
 //
@@ -149,7 +151,12 @@ public class AdminController {
 
     @PostMapping("/product/brand/delete")
     public String deleteBrand(@RequestParam Integer id) {
-        brandService.deleteBrand(id);
+        try {
+            brandService.deleteBrand(id);
+        } catch (DataIntegrityViolationException ex) {
+            ex.printStackTrace();
+            return "redirect:/admin/product?error2=true";
+        }
         return "redirect:/admin/product";
     }
 }

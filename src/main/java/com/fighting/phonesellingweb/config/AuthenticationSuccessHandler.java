@@ -17,12 +17,6 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // get user details
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        // check if user is locked
-        if (!userDetails.isAccountNonLocked()) {
-            // redirect to lock page
-            response.sendRedirect("/lock");
-            return;
-        }
         // create cookie
         Cookie cookie = new Cookie("email", userDetails.getUsername());
         // set cookie to expire in 7 days

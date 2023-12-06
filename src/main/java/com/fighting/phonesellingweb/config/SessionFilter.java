@@ -16,7 +16,7 @@ public class SessionFilter implements Filter {
 
         HttpSession session = ((HttpServletRequest) request).getSession(false);
 
-        if (session == null) {
+        if (session == null || session.getAttribute("SPRING_SECURITY_CONTEXT") == null) {
             CookieUtil.clearCookies((HttpServletResponse) response);
         }
 

@@ -81,7 +81,7 @@ public class ProductController {
             favoriteService.save(favorite);
         }
 
-        return "redirect:product/" + id;
+        return "redirect:/product/" + id;
     }
 
     @PostMapping("/favorite/delete/{id}")

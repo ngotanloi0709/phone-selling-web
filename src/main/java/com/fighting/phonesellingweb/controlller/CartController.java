@@ -62,11 +62,8 @@ public class CartController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateCartItem(HttpServletRequest request, @PathVariable Integer id, @RequestParam(name = "quantity", defaultValue = "1") int quantity) {
-        String email = getCookieValue(request, "email");
-        User user = userService.findUserByEmail(email);
-        Phone phone = phoneService.findPhoneById(id);
-        cartService.addCartItem(phone, user, quantity);
+    public String updateCartItem(@PathVariable Integer id, @RequestParam(name = "quantity", defaultValue = "1") int quantity) {
+        cartService.updateCartItem(id, quantity);
 
         return "redirect:/cart";
     }

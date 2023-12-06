@@ -45,7 +45,7 @@
         <!-- Products based on brand -->
         <div class="container mt-4">
             <h2>Brand Products</h2>
-            <div class="btn-group" role="group" aria-label="Brand selection">
+            <div class="btn-group mb-4" role="group" aria-label="Brand selection">
                 <a th:each="brand : ${brands}"
                    th:href="@{'/brand?brandId=' + ${brand.id}}"
                    class="btn btn-outline-primary"
@@ -67,9 +67,12 @@
                     </div>
                 </div>
             </div>
+            <div th:if="${#lists.size(brandPhones.content) == 0}">
+                <p>Thương hiệu không có sản phẩm nào</p>
+            </div>
             <!-- Pagination -->
                 <nav>
-                    <ul class="pagination">
+                    <ul class="pagination mt-4">
                         <li class="page-item" th:classappend="${brandPhones.first} ? 'disabled' : ''">
                             <a class="page-link" th:href="@{'/brand?brandId=' + ${brandId} + '&page=' + ${brandPhones.number - 1}}">Previous</a>
                         </li>

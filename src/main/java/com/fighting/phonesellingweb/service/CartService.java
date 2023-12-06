@@ -36,6 +36,12 @@ public class CartService {
         cartItemRepository.save(cartItem);
     }
 
+    public void updateCartItem(Integer id, int quantity) {
+        CartItem cartItem = cartItemRepository.findById(id).get();
+        cartItem.setQuantity(quantity);
+        cartItemRepository.save(cartItem);
+    }
+
     public void deleteCartItem(Integer id) {
         cartItemRepository.deleteById(id);
     }
