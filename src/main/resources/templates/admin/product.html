@@ -256,6 +256,27 @@
         </div>
     </div>
 
+    <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteProductModalLabel">Xác nhận xoá sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xoá sản phẩm này không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <form th:action="@{/admin/product/delete}" method="post">
+                        <input type="hidden" name="id">
+                        <button class="btn btn-danger" type="submit">Xoá</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="editBrandModal" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -301,6 +322,15 @@
 <div th:insert="~{/footer.html}"></div>
 
 <script>
+    window.onload = function() {
+        var url = new URL(window.location.href);
+        if (url.searchParams.get('error1')) {
+            alert('Không thể xoá điện thoại do điện thoại đang là khoá ngoại của các bảng khác');
+        } else if (url.searchParams.get('error2')) {
+            alert('Không thể xoá thương hiệu do thương hiệu đang là khoá ngoại của các bảng khác');
+        }
+    }
+
     $(document).ready(function() {
         $('#editProductModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
@@ -333,6 +363,16 @@
             modal.find('.modal-body #editProductOs').val(productOs);
             modal.find('.modal-body #editProductMemory').val(productMemory);
             modal.find('.modal-body #editProductImageUrl').val(productImageUrl);
+        });
+
+        $(document).ready(function() {
+            $('#deleteProductModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var phoneId = button.data('id');
+
+                var modal = $(this);
+                modal.find('.modal-footer form input[name="id"]').val(phoneId);
+            });
         });
     });
 
