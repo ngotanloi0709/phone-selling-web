@@ -64,7 +64,16 @@
                         <div class="card-body">
                             <h5 class="card-title" th:text="${phone.name}">Product Name</h5>
                             <p class="card-text" th:text="'Price: $' + ${phone.price}">Price</p>
-                            <a href="#" class="btn btn-primary">Add to Cart</a>
+                            <form th:action="@{/cart/add/{id}(id=${phone.id})}" method="post">
+                                <input type="hidden" name="productPage" value="false"/>
+                                <button type="submit" class="btn btn-primary">Thêm vào giỏ hàng</button>
+                            </form>
+                            <form th:action="@{/cart/buyNow/{id}(id=${phone.id})}" method="post">
+                                <button type="submit" class="btn btn-success">Mua ngay</button>
+                            </form>
+                            <form th:action="@{/product/{id}(id=${phone.id})}">
+                                <button type="submit" class="btn btn-info">Chi tiết</button>
+                            </form>
                         </div>
                     </div>
                 </div>
