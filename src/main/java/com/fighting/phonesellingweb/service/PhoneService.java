@@ -100,4 +100,8 @@ public class PhoneService {
     public Page<Phone> findPhonesByNameContaining(String name, Pageable pageable) {
         return phoneRepository.findByNameContainingIgnoreCase(name, pageable);
     }
+
+    public Phone getPhoneById(int phoneId) {
+        return phoneRepository.findById(phoneId).orElse(null);
+    }
 }
