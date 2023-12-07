@@ -82,6 +82,10 @@ public class OrderService {
         return orderItemRepository.findByOrderId(id);
     }
 
+    public List<Order> getOrdersByUserId(int userId) {
+        return orderRepository.findByUserId(userId);
+    }
+
 
 
 }

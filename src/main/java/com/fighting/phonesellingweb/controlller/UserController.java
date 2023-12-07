@@ -2,7 +2,10 @@ package com.fighting.phonesellingweb.controlller;
 
 import com.fighting.phonesellingweb.dto.ChangePasswordRequest;
 import com.fighting.phonesellingweb.dto.ProfileUpdateRequest;
+import com.fighting.phonesellingweb.model.Order;
+import com.fighting.phonesellingweb.model.OrderItem;
 import com.fighting.phonesellingweb.model.User;
+import com.fighting.phonesellingweb.service.OrderService;
 import com.fighting.phonesellingweb.service.UserService;
 import com.fighting.phonesellingweb.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +14,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +23,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -28,8 +35,9 @@ import java.util.Random;
 public class UserController {
     private UserService userService;
     private PasswordEncoder passwordEncoder;
-
+    private OrderService orderService;
     private JavaMailSender mailSender;
+
 
     private void sendVerificationCode(String email, String verificationCode) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -245,4 +253,29 @@ public class UserController {
 
         return "redirect:/account/login";
     }
+
+
+
+    @GetMapping("/order")
+    public String getUserOrders(Model model, Principal principal) {
+        String currentUserName = principal.getName();
+        User user = userService.findUserByEmail(currentUserName);
+        List<Order> orders = orderService.getOrdersByUserId(user.getId());
+        model.addAttribute("orders", orders);
+        return "user_order";
+    }
+    @GetMapping("/orders/view/{id}")
+    public String viewOrderItems(@PathVariable("id") int id, Model model) {
+        Order order = orderService.getOrderById(id);
+        List<OrderItem> orderItems = order.getOrderItems();
+        double totalAmount = orderItems.stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+        model.addAttribute("orderItems", orderItems);
+        model.addAttribute("totalAmount", totalAmount);
+        return "user_view_order_items";
+    }
+
+
+
 }
