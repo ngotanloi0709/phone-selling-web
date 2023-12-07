@@ -8,14 +8,32 @@
 </head>
 <body>
 <div th:insert="~{/navbar.html}"></div>
-<main>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <h1>Đây là trang quản lý đơn hàng</h1>
-            </div>
-        </div>
-    </div>
+<main class="container mt-4">
+    <h1 class="mb-4">Orders</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Order Date</th>
+            <th>Order Status</th>
+            <th>Total Amount</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.orderDate}"></td>
+            <td th:text="${order.status}"></td>
+            <td th:text="${order.totalAmount}"></td>
+            <td>
+                <a th:href="@{/admin/orders/view/{id}(id=${order.id})}" class="btn btn-info btn-sm">View Items</a>
+                <a th:href="@{/admin/orders/delete/{id}(id=${order.id})}" class="btn btn-danger btn-sm">Delete</a>
+                <a th:href="@{/admin/orders/edit/{id}(id=${order.id})}" class="btn btn-primary btn-sm">Edit</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </main>
 <div th:insert="~{/footer.html}"></div>
 </body>

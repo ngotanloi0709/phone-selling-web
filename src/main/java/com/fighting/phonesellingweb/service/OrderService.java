@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-//@AllArgsConstructor
+@AllArgsConstructor
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
     @Autowired
-    private OrderItemRepository orderItemRepository; // Add this;
+    private OrderItemRepository orderItemRepository;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -29,8 +29,10 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public void updateOrder(Order order) {
-        orderRepository.save(order);
+    public void updateOrder(Order updatedOrder) {
+        Order existingOrder = orderRepository.findById(updatedOrder.getId()).orElseThrow(() -> new RuntimeException("Order not found"));
+        existingOrder.setStatus(updatedOrder.getStatus());
+        orderRepository.save(existingOrder);
     }
 
     public void deleteOrder(int id) {
@@ -71,14 +73,15 @@ public class OrderService {
         }
 
     public Order getOrderById(Integer id) {
-//        return orderRepository.findByIdWithOrderItems(id).orElse(null);
-        return orderRepository.findById(id).orElse(null);
+        return orderRepository.findByIdWithOrderItems(id);
     }
+
 
 
     public List<OrderItem> getOrderItemsByOrderId(int id) {
         return orderItemRepository.findByOrderId(id);
     }
+
 
 
 }
