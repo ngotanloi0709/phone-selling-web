@@ -1,7 +1,10 @@
 package com.fighting.phonesellingweb.util;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Arrays;
 
 public class CookieUtil {
     public static void createCookie(String name, String value, HttpServletResponse response) {
@@ -23,5 +26,16 @@ public class CookieUtil {
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
+    }
+
+    public static String getCookieValue(HttpServletRequest request, String name) {
+        if (request.getCookies() != null) {
+            return Arrays.stream(request.getCookies())
+                    .filter(cookie -> name.equals(cookie.getName()))
+                    .findFirst()
+                    .map(Cookie::getValue)
+                    .orElse(null);
+        }
+        return null;
     }
 }

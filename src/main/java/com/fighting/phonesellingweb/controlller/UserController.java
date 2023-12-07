@@ -6,6 +6,7 @@ import com.fighting.phonesellingweb.model.User;
 import com.fighting.phonesellingweb.service.UserService;
 import com.fighting.phonesellingweb.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -167,7 +168,9 @@ public class UserController {
     }
 
     @PostMapping("/forgot-password")
-    public String processForgotPassword(@RequestParam String email, HttpServletResponse response, Model model) {
+    public String processForgotPassword(@RequestParam String email,
+                                        HttpServletResponse response,
+                                        Model model) {
         Optional<User> userOptional = userService.findUserByEmailOptional(email);
         if (!userOptional.isPresent()) {
             model.addAttribute("error", "No account found with the provided email.");
@@ -178,7 +181,7 @@ public class UserController {
         String verificationCode = generateVerificationCode();
         sendVerificationCode(email, verificationCode);
 
-        CookieUtil.createCookie("email", email, response);
+        CookieUtil.createCookie("forgot_password_email", email, response);
         CookieUtil.createCookie("verificationCode", verificationCode, response);
         CookieUtil.createCookie("codeTime", String.valueOf(System.currentTimeMillis()), response);
 
@@ -208,22 +211,29 @@ public class UserController {
 
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@CookieValue(name="verificationCode", required = false) String verificationCode,
+                                        @CookieValue(name="forgot_password_email", required = false) String email,
                                         @CookieValue(name="codeTime", required = false) Long codeTime, Model model) {
-        if (verificationCode == null || codeTime == null || System.currentTimeMillis() - codeTime > 5 * 60 * 1000) {
+        if (verificationCode == null || email == null || codeTime == null || System.currentTimeMillis() - codeTime > 5 * 60 * 1000) {
             model.addAttribute("error", "Invalid or expired verification code.");
             return "verify_code";
         }
 
+        model.addAttribute("forgot_password_email", email);
+        model.addAttribute("token", verificationCode);
+
         return "reset_password";
     }
 
+
     @PostMapping("/reset-password")
-    public String resetPassword(@RequestParam String code, @RequestParam String password,
-                                @CookieValue(name="verificationCode", required = false) String verificationCode,
-                                @CookieValue(name="email", required = false) String email,
+    public String resetPassword(@RequestParam String password,
+                                @RequestParam String confirmPassword,
+                                HttpServletRequest   request, // Add HttpServletRequest as a parameter
                                 HttpServletResponse response, Model model) {
-        if (verificationCode == null || !verificationCode.equals(code)) {
-            model.addAttribute("error", "Invalid or expired verification code.");
+        String email = CookieUtil.getCookieValue(request, "forgotPasswordEmail");
+
+        if (email == null) {
+            model.addAttribute("error", "No email found for password reset.");
             return "reset_password";
         }
 
