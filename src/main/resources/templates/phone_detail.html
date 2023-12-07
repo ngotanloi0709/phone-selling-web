@@ -30,10 +30,7 @@
                                     <label for="quantity">Số lượng</label>
                                     <input id="quantity" type="number" name="quantity" min="1" value="1" class="form-control" style="width: 100px;"/>
                                 </div>
-                                <form th:action="@{/cart/add/{id}(id=${phone.id})}" method="post">
-                                    <input type="hidden" name="productPage" value="false"/>
-                                    <button type="submit" class="btn btn-primary">Thêm vào giỏ hàng</button>
-                                </form>
+                                <button class="btn btn-success btn-lg mt-2" type="submit">Thêm vào giỏ hàng</button>
                             </form>
                             <form th:action="@{/product/favorite/add/{id}(id=${phone.id})}" method="post" class="mb-auto">
                                 <button class="btn btn-success btn-lg mt-2" type="submit">Thêm vào yêu thích</button>
