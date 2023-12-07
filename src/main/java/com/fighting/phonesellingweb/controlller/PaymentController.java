@@ -7,6 +7,7 @@ import com.fighting.phonesellingweb.model.User;
 import com.fighting.phonesellingweb.service.CartService;
 import com.fighting.phonesellingweb.service.OrderService;
 import com.fighting.phonesellingweb.service.UserService;
+import com.fighting.phonesellingweb.service.VNPayService;
 import com.fighting.phonesellingweb.util.CookieUtil;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.Cookie;
@@ -24,12 +25,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/payment")
+@RequestMapping("")
 @AllArgsConstructor
 public class PaymentController {
     private final CartService cartService;
     private final OrderService orderService;
     private final UserService UserService;
+    private final VNPayService vnPayService;
+    private final UserService userService;
     @Autowired
     private JavaMailSender mailSender;
 
@@ -44,7 +47,7 @@ public class PaymentController {
         }
         return null;
     }
-    @PostMapping("/processCashOnDelivery")
+    @PostMapping("/payment/processCashOnDelivery")
     public String processCashOnDelivery(HttpServletRequest request, Model model, HttpServletResponse response) {
         String email = getCookieValue(request, "email");
         User user = UserService.findUserByEmail(email);
@@ -133,7 +136,7 @@ public class PaymentController {
 
 
 
-    @GetMapping("/orderConfirmation")
+    @GetMapping("/payment/orderConfirmation")
     public String orderConfirmation(@RequestParam("id") int id, Model model) {
         Order order = orderService.getOrderById(id);
         if (order == null) {
@@ -145,4 +148,69 @@ public class PaymentController {
         return "orderConfirmation";
     }
 
-}
+
+    @PostMapping("/payment/processVNPayPayment")
+    public String processVNPayPayment(HttpServletRequest request, Model model) {
+        String email = getCookieValue(request, "email");
+        User user = userService.findUserByEmail(email);
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        List<CartItem> cartItems = cartService.getCartItems(user);
+        Order order = orderService.createOrder(user, cartItems);
+
+        int totalAmount = (int) (order.getTotalAmount() * 100); // Chuyển đổi sang đơn vị tiền tệ VNPay
+
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String vnpayUrl = vnPayService.createOrder(totalAmount, "Order Description", baseUrl);
+
+        return "redirect:" + vnpayUrl;
+    }
+
+    @GetMapping("/api/payment/vnpay-payment")
+    public String vnpayReturn(HttpServletRequest request, Model model) {
+        // Xử lý các tham số từ VNPay
+        String transactionNo = request.getParameter("vnp_TransactionNo");
+        String responseCode = request.getParameter("vnp_ResponseCode");
+        String secureHash = request.getParameter("vnp_SecureHash");
+        // Các tham số khác như vnp_Amount, vnp_BankCode, vnp_PayDate, v.v.
+
+        // Kiểm tra secureHash hoặc các thông tin khác để xác minh giao dịch
+
+        String email = getCookieValue(request, "email");
+        User user = userService.findUserByEmail(email);
+
+
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+        Order order = orderService.findLatestOrderByUser(user);
+
+        // Giả sử rằng responseCode = "00" là thành công
+        if ("00".equals(responseCode)) {
+            order.setStatus(Order.OrderStatus.COMPLETED);
+            sendOrderConfirmationEmail(user.getEmail(), order, user);
+        } else {
+            order.setStatus(Order.OrderStatus.CANCELLED);
+            model.addAttribute("message", "Thanh toán không thành công hoặc đã bị hủy.");
+        }
+
+        orderService.saveOrder(order);
+        cartService.clearCart(user, order);
+
+        return "00".equals(responseCode) ? "redirect:/payment/orderConfirmation?id=" + order.getId() : "payment_failure";
+        }
+    }
+
+
+
+
+
+
+
+
+
+

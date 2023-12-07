@@ -86,6 +86,12 @@ public class OrderService {
         return orderRepository.findByUserId(userId);
     }
 
+    public Order findLatestOrderByUser(User user) {
+        return orderRepository.findTopByUserOrderByOrderDateDesc(user)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng cho người dùng này."));
+    }
+
+
 
 
 }
