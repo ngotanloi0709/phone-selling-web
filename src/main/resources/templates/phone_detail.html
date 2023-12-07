@@ -30,13 +30,16 @@
                                     <label for="quantity">Số lượng</label>
                                     <input id="quantity" type="number" name="quantity" min="1" value="1" class="form-control" style="width: 100px;"/>
                                 </div>
-                                <button class="btn btn-success btn-lg mt-2" type="submit">Thêm vào giỏ hàng</button>
+                                <form th:action="@{/cart/add/{id}(id=${phone.id})}" method="post">
+                                    <input type="hidden" name="productPage" value="false"/>
+                                    <button type="submit" class="btn btn-primary">Thêm vào giỏ hàng</button>
+                                </form>
                             </form>
                             <form th:action="@{/product/favorite/add/{id}(id=${phone.id})}" method="post" class="mb-auto">
                                 <button class="btn btn-success btn-lg mt-2" type="submit">Thêm vào yêu thích</button>
                             </form>
-                            <form method="post">
-                                <button class="btn btn-success btn-lg mt-2" type="submit">Mua ngay</button>
+                            <form th:action="@{/cart/buyNow/{id}(id=${phone.id})}" method="post">
+                                <button type="submit" class="btn btn-success">Mua ngay</button>
                             </form>
                         </div>
                         <button id="shareButton" class="btn btn-primary btn-lg mt-2">Chia sẻ</button>
