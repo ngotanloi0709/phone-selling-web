@@ -6,13 +6,11 @@ import com.fighting.phonesellingweb.model.ProductViewHistory;
 import com.fighting.phonesellingweb.model.User;
 import com.fighting.phonesellingweb.service.*;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Base64;
 
 @Controller
 @RequestMapping("/product")

@@ -62,16 +62,6 @@ public class HomeController {
         return "index";
     }
 
-//    @GetMapping("/brand/{brandId}/phones")
-//    @ResponseBody
-//    public List<Phone> getPhonesByBrand(@PathVariable int brandId) {
-//        return phoneService.findPhonesByBrand(brandId);
-//    }
-
-
-
-    // HomeController.java
-
     @GetMapping("/best-sellers")
     public String bestSellers(@RequestParam(defaultValue = "0") int page,
                               @RequestParam(defaultValue = "10") int size,

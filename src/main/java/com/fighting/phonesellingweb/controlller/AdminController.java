@@ -14,13 +14,12 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
-//@AllArgsConstructor
+@AllArgsConstructor
 public class AdminController {
     private UserService userService;
     private PhoneService phoneService;
     private BrandService brandService;
     private CommentService commentService;
-    @Autowired
     private OrderService  orderService;
 
 

@@ -24,7 +24,6 @@ public class CartController {
     private UserService userService;
     private CartService cartService;
     private PhoneService phoneService;
-    private OrderService orderService;
 
     @GetMapping({"", "/"})
     public String getCart(HttpServletRequest request, Model model) {
@@ -110,6 +109,4 @@ public class CartController {
 
         return "cartToPay";
     }
-
-
 }
