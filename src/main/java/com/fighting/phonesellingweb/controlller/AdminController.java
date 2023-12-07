@@ -162,67 +162,48 @@ public class AdminController {
     }
 
     // Code Section for order
-    @GetMapping("/orders")
-    public String listOrders(Model model) {
-        List<Order> orders = orderService.getAllOrders();
-        model.addAttribute("orders", orders);
-        model.addAttribute("order", new Order());
-        return "admin/orders";
-    }
-
-    @PostMapping("/orders/add")
-    public String addOrder(@ModelAttribute("order") Order order) {
-        for (OrderItem orderItem : order.getOrderItems()) {
-            orderItem.setOrder(order);
-        }
-        orderService.saveOrder(order);
-        return "redirect:/admin/orders";
+    @GetMapping("/orders/view/{id}")
+    public String viewOrderItems(@PathVariable("id") int id, Model model) {
+        Order order = orderService.getOrderById(id);
+        List<OrderItem> orderItems = order.getOrderItems();
+        double totalAmount = orderItems.stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+        model.addAttribute("orderItems", orderItems);
+        model.addAttribute("totalAmount", totalAmount);
+        return "admin/view_order_items";
     }
 
     @GetMapping("/orders/edit/{id}")
     public String editOrder(@PathVariable("id") int id, Model model) {
         Order order = orderService.getOrderById(id);
+        List<OrderItem> orderItems = order.getOrderItems();
+        double totalAmount = orderItems.stream()
+                .mapToDouble(item -> item.getQuantity() * item.getPrice())
+                .sum();
         model.addAttribute("order", order);
-        return "admin/editOrder";
-    }
+        model.addAttribute("orderItems", orderItems);
+        model.addAttribute("totalAmount", totalAmount);
+        return "admin/edit_order_status";    }
 
     @PostMapping("/orders/edit")
-    public String updateOrder(@ModelAttribute("order") Order order) {
+    public String updateOrder(@ModelAttribute Order order, Model model) {
         orderService.updateOrder(order);
         return "redirect:/admin/orders";
     }
 
-    @PostMapping("/orders/delete")
-    public String deleteOrder(@RequestParam("id") int id) {
-        try {
-            orderService.deleteOrder(id);
-        } catch (DataIntegrityViolationException ex) {
-            ex.printStackTrace();
-            return "redirect:/admin/orders?error=true";
-        }
+    @GetMapping("/orders")
+    public String listOrders(Model model) {
+        List<Order> orders = orderService.getAllOrders();
+        model.addAttribute("orders", orders);
+        model.addAttribute("order", new Order());
+        return "admin/order";
+    }
+
+    @GetMapping("/orders/delete/{id}")
+    public String deleteOrder(@PathVariable("id") int id) {
+        orderService.deleteOrder(id);
         return "redirect:/admin/orders";
-    }
-
-    @GetMapping("/getPhoneDetails/{phoneId}")
-    public ResponseEntity<Phone> getPhoneDetails(@PathVariable int phoneId) {
-        Phone phone = phoneService.getPhoneById(phoneId);
-        return ResponseEntity.ok(phone);
-    }
-
-    @GetMapping("/getUserDetails/{userId}")
-    public ResponseEntity<User> getUserDetails(@PathVariable int userId) {
-        User user = userService.getUserById(userId);
-        return ResponseEntity.ok(user);
-    }
-
-    @GetMapping("/getOrderDetails/{orderId}")
-    public ResponseEntity<Order> getOrderDetails(@PathVariable int orderId) {
-        Order order = orderService.getOrderById(orderId);
-        if (order != null) {
-            System.out.println("order: " + order);
-            return new ResponseEntity<>(order, null, 200);
-        }
-        return ResponseEntity.notFound().build();
     }
 
 
