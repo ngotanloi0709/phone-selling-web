@@ -236,7 +236,7 @@ public class UserController {
                                 @RequestParam String confirmPassword,
                                 HttpServletRequest   request, // Add HttpServletRequest as a parameter
                                 HttpServletResponse response, Model model) {
-        String email = CookieUtil.getCookieValue(request, "forgotPasswordEmail");
+        String email = CookieUtil.getCookieValue(request, "forgot_password_email");
 
         if (email == null) {
             model.addAttribute("error", "No email found for password reset.");
