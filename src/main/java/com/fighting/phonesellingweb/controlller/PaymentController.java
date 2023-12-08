@@ -28,11 +28,19 @@ import java.util.List;
 @RequestMapping("")
 @AllArgsConstructor
 public class PaymentController {
+
+    @Autowired
     private final CartService cartService;
+
+    @Autowired
     private final OrderService orderService;
+
+    @Autowired
     private final UserService UserService;
+
+    @Autowired
     private final VNPayService vnPayService;
-    private final UserService userService;
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -149,10 +157,10 @@ public class PaymentController {
     }
 
 
-    @PostMapping("/payment/processVNPayPayment")
+    @PostMapping("/api/payment/vnpay-payment")
     public String processVNPayPayment(HttpServletRequest request, Model model) {
         String email = getCookieValue(request, "email");
-        User user = userService.findUserByEmail(email);
+        User user = UserService.findUserByEmail(email);
 
         if (user == null) {
             return "redirect:/login";
@@ -177,17 +185,22 @@ public class PaymentController {
         String secureHash = request.getParameter("vnp_SecureHash");
         // Các tham số khác như vnp_Amount, vnp_BankCode, vnp_PayDate, v.v.
 
-        // Kiểm tra secureHash hoặc các thông tin khác để xác minh giao dịch
+        // TODO: Add secure hash verification logic here
 
         String email = getCookieValue(request, "email");
-        User user = userService.findUserByEmail(email);
+        User user = UserService.findUserByEmail(email);
 
 
 
         if (user == null) {
             return "redirect:/login";
         }
-        Order order = orderService.findLatestOrderByUser(user);
+        List<CartItem> cartItems = cartService.getCartItems(user);
+        Order order = orderService.createOrder(user, cartItems);
+
+
+        model.addAttribute("order", order);
+        model.addAttribute("orderItems", order.getOrderItems());
 
         // Giả sử rằng responseCode = "00" là thành công
         if ("00".equals(responseCode)) {
