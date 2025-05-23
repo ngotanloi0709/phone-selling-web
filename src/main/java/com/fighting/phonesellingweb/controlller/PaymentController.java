@@ -28,20 +28,10 @@ import java.util.List;
 @RequestMapping("")
 @AllArgsConstructor
 public class PaymentController {
-
-    @Autowired
     private final CartService cartService;
-
-    @Autowired
     private final OrderService orderService;
-
-    @Autowired
     private final UserService UserService;
-
-    @Autowired
     private final VNPayService vnPayService;
-
-    @Autowired
     private JavaMailSender mailSender;
 
     private String getCookieValue(HttpServletRequest request, String name) {
@@ -55,6 +45,7 @@ public class PaymentController {
         }
         return null;
     }
+
     @PostMapping("/payment/processCashOnDelivery")
     public String processCashOnDelivery(HttpServletRequest request, Model model, HttpServletResponse response) {
         String email = getCookieValue(request, "email");
@@ -70,7 +61,7 @@ public class PaymentController {
 
         model.addAttribute("order", order);
         model.addAttribute("orderItems", order.getOrderItems());
-        sendOrderConfirmationEmail(user.getEmail(), order, user);
+//        sendOrderConfirmationEmail(user.getEmail(), order, user);
 
         // Clear the ordered items from the cart after the order has been placed and the email has been sent
         cartService.clearCart(user, order);
@@ -81,52 +72,15 @@ public class PaymentController {
     }
 
 
-
-    private final String emailTemplate = "<html>\n" +
-            "<head>\n" +
-            "    <title>Xác nhận đơn hàng</title>\n" +
-            "    <style>\n" +
-            "        body { font-family: Arial, sans-serif; }\n" +
-            "        .table { width: 100%; border-collapse: collapse; }\n" +
-            "        .th, .td { border: 1px solid #ddd; padding: 8px; text-align: left; }\n" +
-            "        .th { background-color: #f2f2f2; }\n" +
-            "    </style>\n" +
-            "</head>\n" +
-            "<body>\n" +
-            "    <div class=\"container\">\n" +
-            "        <h1 class=\"mt-4\">Xác nhận đơn hàng</h1>\n" +
-            "        <p>Xin chào, ${userName}</p>\n" +
-            "        <p>Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi. Dưới đây là thông tin đơn hàng của bạn:</p>\n" +
-            "        <ul>\n" +
-            "            <li>Ngày đặt hàng: ${orderDate}</li>\n" +
-            "            <li>Địa chỉ giao hàng: ${userAddress}</li>\n" +
-            "            <li>Số điện thoại: ${userPhone}</li>\n" +
-            "            <li>Email: ${userEmail}</li>\n" +
-            "        </ul>\n" +
-            "        <p class=\"font-weight-bold\">Tổng cộng: ${totalAmount}</p>\n" +
-            "    </div>\n" +
-            "</body>\n" +
-            "</html>";
+    private final String emailTemplate = "<html>\n" + "<head>\n" + "    <title>Xác nhận đơn hàng</title>\n" + "    <style>\n" + "        body { font-family: Arial, sans-serif; }\n" + "        .table { width: 100%; border-collapse: collapse; }\n" + "        .th, .td { border: 1px solid #ddd; padding: 8px; text-align: left; }\n" + "        .th { background-color: #f2f2f2; }\n" + "    </style>\n" + "</head>\n" + "<body>\n" + "    <div class=\"container\">\n" + "        <h1 class=\"mt-4\">Xác nhận đơn hàng</h1>\n" + "        <p>Xin chào, ${userName}</p>\n" + "        <p>Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi. Dưới đây là thông tin đơn hàng của bạn:</p>\n" + "        <ul>\n" + "            <li>Ngày đặt hàng: ${orderDate}</li>\n" + "            <li>Địa chỉ giao hàng: ${userAddress}</li>\n" + "            <li>Số điện thoại: ${userPhone}</li>\n" + "            <li>Email: ${userEmail}</li>\n" + "        </ul>\n" + "        <p class=\"font-weight-bold\">Tổng cộng: ${totalAmount}</p>\n" + "    </div>\n" + "</body>\n" + "</html>";
 
 
     private String buildEmailContent(User user, Order order) {
         List<OrderItem> orderItems = orderService.getOrderItemsByOrderId(order.getId());
         System.out.println("Order Items: " + order.getOrderItems());
 
-        return emailTemplate
-                .replace("${userName}", user.getName())
-                .replace("${orderDate}", order.getOrderDate().toString())
-                .replace("${userAddress}", user.getAddress())
-                .replace("${userPhone}", user.getPhone())
-                .replace("${userEmail}", user.getEmail())
-                .replace("${totalAmount}", String.format("%.2f", order.getTotalAmount()));
+        return emailTemplate.replace("${userName}", user.getName()).replace("${orderDate}", order.getOrderDate().toString()).replace("${userAddress}", user.getAddress()).replace("${userPhone}", user.getPhone()).replace("${userEmail}", user.getEmail()).replace("${totalAmount}", String.format("%.2f", order.getTotalAmount()));
     }
-
-
-
-
-
-
 
 
     @SneakyThrows
@@ -138,10 +92,9 @@ public class PaymentController {
         helper.setText(emailContent, true); // set to true to send HTML
         helper.setTo(to);
         helper.setSubject("Xác nhận đơn hàng");
-        helper.setFrom("phuongtdt9902@gmail.com");
+        helper.setFrom("vitnhodethuong1163@gmail.com");
         mailSender.send(message);
     }
-
 
 
     @GetMapping("/payment/orderConfirmation")
@@ -191,7 +144,6 @@ public class PaymentController {
         User user = UserService.findUserByEmail(email);
 
 
-
         if (user == null) {
             return "redirect:/login";
         }
@@ -215,8 +167,8 @@ public class PaymentController {
         cartService.clearCart(user, order);
 
         return "00".equals(responseCode) ? "redirect:/payment/orderConfirmation?id=" + order.getId() : "payment_failure";
-        }
     }
+}
 
 
 
