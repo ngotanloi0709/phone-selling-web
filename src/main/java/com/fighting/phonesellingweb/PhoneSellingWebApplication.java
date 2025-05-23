@@ -33,8 +33,8 @@ public class PhoneSellingWebApplication {
     }
 
     private void addUsers() {
-        userService.register("ngotanloi0709@gmail.com", "loi@2003", "Ngô Tấn Lợi", "0123456789");
-        userService.setRole("ngotanloi0709@gmail.com", Role.ROLE_ADMIN);
+        userService.register("admin@gmail.com", "123456", "Admin", "0123456789");
+        userService.setRole("admin@gmail.com", Role.ROLE_ADMIN);
     }
 
     private void addBrands() {

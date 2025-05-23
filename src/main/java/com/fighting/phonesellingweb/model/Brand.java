@@ -2,6 +2,7 @@ package com.fighting.phonesellingweb.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,9 +18,11 @@ public class Brand {
     private int id;
     private String name;
 
-    @OneToMany(mappedBy = "brand", fetch = FetchType.EAGER)
-    @JsonBackReference("phone-brand")
-    @ToString.Exclude
+    //    @OneToMany(mappedBy = "brand", fetch = FetchType.EAGER)
+//    @JsonBackReference("phone-brand")
+//    @ToString.Exclude
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Phone> phones;
 
     public Brand(String name) {

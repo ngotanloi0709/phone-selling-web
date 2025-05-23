@@ -1,5 +1,7 @@
     package com.fighting.phonesellingweb.model;
 
+    import com.fasterxml.jackson.annotation.JsonBackReference;
+    import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
     import com.fasterxml.jackson.annotation.JsonManagedReference;
     import jakarta.persistence.*;
     import lombok.*;
@@ -28,12 +30,14 @@
 
         @ManyToOne
         @JoinColumn(name = "brand_id")
-        @JsonManagedReference("phone-brand")
+        @JsonBackReference
         private Brand brand;
 
+        @JsonIgnoreProperties({"phone", "user"})
         @OneToMany(mappedBy = "phone")
         private List<Comment> comments;
 
+        @JsonIgnoreProperties({"phone", "user"})
         @OneToMany(mappedBy = "phone")
         private List<ProductViewHistory> viewHistory;
 

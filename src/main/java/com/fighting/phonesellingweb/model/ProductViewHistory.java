@@ -1,6 +1,8 @@
 package com.fighting.phonesellingweb.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,10 +21,13 @@ public class ProductViewHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
+    @JsonIgnoreProperties({"viewHistory", "comments"})
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnoreProperties({"viewHistory", "comments"})
     @ManyToOne
     @JoinColumn(name = "phone_id")
     private Phone phone;

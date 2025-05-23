@@ -37,6 +37,8 @@ public class SecurityConfig {
                 .requestMatchers("/error").permitAll()
                 // allow access to authentication page
                 .requestMatchers("account/**").permitAll()
+                // allow api access
+                .requestMatchers("api/**").permitAll()
                 // allow access to admin page
                 .requestMatchers("admin/**").hasRole("ADMIN")
                 // any request must be authenticated

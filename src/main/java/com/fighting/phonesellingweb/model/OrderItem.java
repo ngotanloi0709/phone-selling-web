@@ -1,5 +1,7 @@
 package com.fighting.phonesellingweb.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,11 +17,13 @@ public class OrderItem {
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "phone_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "comments", "viewHistory"})
     private Phone phone;
 
     private int quantity;

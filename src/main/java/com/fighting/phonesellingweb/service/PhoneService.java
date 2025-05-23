@@ -44,6 +44,7 @@ public class PhoneService {
                 .limit(limit)
                 .collect(Collectors.toList());
     }
+
     // Lấy sản phẩm theo thương hiệu
     public List<Phone> findPhonesByBrand(int brand_id) {
         Pageable pageable = PageRequest.of(0, 10); // adjust the page number and size as needed
@@ -58,9 +59,8 @@ public class PhoneService {
 
 
     public Page<Phone> findAllPhones(Pageable pageable) {
-            return phoneRepository.findAll(pageable);
-        }
-
+        return phoneRepository.findAll(pageable);
+    }
 
 
     public Page<Phone> findPhonesByBrand(int brandId, Pageable pageable) {

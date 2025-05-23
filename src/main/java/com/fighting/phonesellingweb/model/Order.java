@@ -1,5 +1,7 @@
 package com.fighting.phonesellingweb.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,6 +23,8 @@ public class Order {
     private Integer id;
 
     @ManyToOne
+    @JsonIgnoreProperties({"orders", "carts", "comments", "viewHistory", "favorites"})
+    @JsonBackReference
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -32,6 +36,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+//    @JsonIgnoreProperties({"order"})
+    @JsonManagedReference
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
